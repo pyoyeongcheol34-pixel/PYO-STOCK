@@ -308,6 +308,8 @@ table.qt.kpi tr.grp td.cur{border:0}
 .kpi-facts .v{font-family:var(--sans);font-weight:500;text-align:left;padding-left:14px;white-space:normal}
 .kpi-facts{grid-template-columns:minmax(90px,max-content) minmax(0,1fr)}
 .kv.gd{grid-template-columns:minmax(92px,38%) minmax(0,1fr)}
+table.t.sumt{table-layout:fixed}
+table.t.sumt td:first-child{white-space:normal}
 table.t tr.kid{display:none}
 table.t tr.kid.open{display:table-row}
 table.t tr.kid td:first-child{padding-left:18px;color:var(--muted);font-size:12.5px}
@@ -1104,7 +1106,8 @@ function summaryTable(sm, cur) {
   const n = cols.length + 1 + chgs.length;
   const body = sm.groups.map(g => `<tr class="grp"><td colspan="${n}">${esc(g.name)}</td></tr>` + groupRows(g.rows || []).map(x => { const row = x.row; return `${trOpen(x)}<td>${togMark(x)}${row.bold ? `<b>${esc(row.label)}</b>` : esc(row.label)}</td>${cols.map((_, i) => `<td class="${i === 0 ? "hl cur" : ""}${!isP(row.unit) && isNum(row.v[i]) && row.v[i] < 0 ? " down" : ""}">${fmt(row.v[i], row.unit)}</td>`).join("")}${chgs.map((c, k) => ch(row, c[1], k === 0)).join("")}</tr>`; }).join("")).join("");
   return `<div><div class="lbl" style="margin-bottom:4px">${esc(sm.title || "실적 자료 요약")}${sm.src ? ` <span class="faint" style="font-weight:400;text-transform:none;letter-spacing:0">· ${esc(sm.src)}</span>` : ""}</div>
-    <div class="tbl-wrap"><table class="t qt kpi" style="min-width:${Math.min(620, 120 + (cols.length + chgs.length) * 80)}px"><thead><tr><th>항목</th>${cols.map((_, i) => `<th class="${i === 0 ? "cur" : ""}">${esc(lab(i))}</th>`).join("")}${chgs.map((c, k) => `<th${k === 0 ? ' class="chg-first"' : ""}>${esc(c[0])}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table></div></div>`;
+    <div class="tbl-wrap"><table class="t qt kpi sumt" style="min-width:${150 + (cols.length + chgs.length) * 92}px">${(() => { const nd = cols.length + chgs.length, first = nd <= 3 ? 40 : 26, w = ((100 - first) / nd).toFixed(3);
+      return `<colgroup><col style="width:${first}%">${Array.from({length: nd}, () => `<col style="width:${w}%">`).join("")}</colgroup>`; })()}<thead><tr><th>항목</th>${cols.map((_, i) => `<th class="${i === 0 ? "cur" : ""}">${esc(lab(i))}</th>`).join("")}${chgs.map((c, k) => `<th${k === 0 ? ' class="chg-first"' : ""}>${esc(c[0])}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table></div></div>`;
 }
 function renderEarn() {
   const el = $("#d-earn"); if (!el) return;
