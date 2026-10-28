@@ -1224,6 +1224,7 @@ function renderVal() {
 /* ---------- cash & debt (balance sheet from the company's filed release) ---------- */
 function renderBS() {
   const el = $("#d-bs"); if (!el) return;
+  if (coveredBySummary("bs")) { el.hidden = true; el.innerHTML = ""; return; }
   const b = D.bs;
   if (!b) { el.hidden = true; el.innerHTML = ""; return; }
   el.hidden = false;
@@ -1270,8 +1271,10 @@ function renderBS() {
 }
 
 /* ---------- capex & cash flow (filed cash flow statements) ---------- */
+const coveredBySummary = k => { const e = D.earnings || {}; return !!e.summary && Array.isArray(e.summaryCovers) && e.summaryCovers.includes(k); };
 function renderCF() {
   const el = $("#d-cf"); if (!el) return;
+  if (coveredBySummary("cf")) { el.hidden = true; el.innerHTML = ""; return; }
   const c = D.cf;
   if (!c) { el.hidden = true; el.innerHTML = ""; return; }
   el.hidden = false;
@@ -1554,6 +1557,8 @@ function renderKpi() {
 let finMode = (() => { try { return localStorage.getItem("pydesk.fin") === "a" ? "a" : "q"; } catch { return "q"; } })();
 function renderQ() {
   const el = $("#d-q"); if (!el) return;
+  if (coveredBySummary("q")) { el.hidden = true; el.innerHTML = ""; return; }
+  el.hidden = false;
   const isQ = finMode === "q";
   const seg = `<div class="seg" role="group" aria-label="실적 기간">${[["q", "분기"], ["a", "연간"]].map(([k, l]) => `<button type="button" data-fin="${k}" aria-pressed="${k === finMode}">${l}</button>`).join("")}</div>`;
   const rows = isQ ? sortRows(D.q) : sortRows(D.a).filter(r => isNum(G(r, "Total Revenue")));
