@@ -1,0 +1,539 @@
+{
+ "updatedAt": "2026-10-28",
+ "rules": [
+  "실적(매출·매출총이익·영업이익·순이익·EPS)·밸류에이션·수주잔고·부문 실적·가이던스는 SEC 공시(10-Q/10-K/8-K 보도자료)나 회사 IR 공식 자료로만 입력한다.",
+  "아래 tickers[T]에 적힌 주소만 직접 조회한다. 일반 웹 검색으로 값을 찾지 않는다.",
+  "새 분기 보도자료 주소를 모를 때만 discovery에 적힌 방법(SEC 폴더 목록)으로 찾고, 찾은 주소는 이 파일의 releases에 추가한다.",
+  "공식 자료에서 확인되지 않은 값은 넣지 않는다(비워 두고 pending에 기록).",
+  "주가·52주 범위·거래량은 시장 데이터(PlayMCP 커넥터), 컨센서스·목표가·투자의견은 애널리스트 추정(Yahoo Finance)으로 공시가 아님을 화면에 표시한다. 클라우드 시장 점유율은 시장조사기관(Synergy Research) 추정치로 표시한다.",
+  "Yahoo가 주는 PER·Forward PER·시가총액·이익률·ROE·부채비율·EBITDA는 쓰지 않는다. PER = 현재가 ÷ 최근 4개 분기 희석 EPS 합(공시), 시가총액 = 현재가 × 공시 주식 수."
+ ],
+ "xbrl": {
+  "how": "https://data.sec.gov/api/xbrl/companyconcept/CIK{cik}/{concept}.json 을 WebFetch로 읽는다. units.USD(EPS는 units['USD/shares'], 주식 수는 units.shares)에서 end ≥ 최근 18개월인 항목을 (start,end,val,form,filed)로 뽑는다. 3개월 값이 없으면 같은 start의 누적값 차이(연간−9개월 등)로 계산하고 derived 표시. EPS를 이렇게 계산하면 근사치(epsApprox).",
+  "note": "회사가 해당 항목을 공시하지 않으면 404(client_error)가 난다. 그 항목은 null로 둔다."
+ },
+ "discovery": {
+  "how": "새 분기 8-K 실적 보도자료는 SEC EDGAR 전문검색으로 찾는다(검증됨 2026-10-28): https://efts.sec.gov/LATEST/search-index?q=%22results%22&forms=8-K&dateRange=custom&startdt={최신 분기말+1일}&enddt={오늘}&ciks={CIK 10자리,쉼표로 여러 개} → hits 중 items에 2.02(Results of Operations)가 있는 것만 실적 발표. 인수·자금조달 8-K는 제외. 보도자료 주소 = https://www.sec.gov/Archives/edgar/data/{CIK 숫자}/{adsh에서 - 제거}/{_id의 ':' 뒤 파일명} (EX-99.1 파일; 8-K 표지 파일 말고 다른 .htm).",
+  "doNotUse": "sec.gov/Archives/edgar/data/{cik}/index.json(7월에서 멈춘 캐시를 돌려줌), browse-edgar, data.sec.gov/submissions(잘림), abc.xyz 목록 페이지(스크립트 렌더링), Yahoo chart/stooq(robots 차단)"
+ },
+ "tickers": {
+  "MSFT": {
+   "cik": "0000789019",
+   "fyEnd": "06-30",
+   "fin": {
+    "rev": "us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax",
+    "gp": "us-gaap/GrossProfit",
+    "op": "us-gaap/OperatingIncomeLoss",
+    "ni": "us-gaap/NetIncomeLoss",
+    "eps": "us-gaap/EarningsPerShareDiluted"
+   },
+   "shares": {
+    "concept": "dei/EntityCommonStockSharesOutstanding",
+    "kind": "cover"
+   },
+   "releases": {
+    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/0000789019/000119312526323632/msft-ex99_1.htm"
+   },
+   "filings": {
+    "10-K FY26": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/",
+    "10-Q 2026-03-31": "https://www.sec.gov/Archives/edgar/data/789019/000119312526191507/",
+    "10-Q 2025-12-31": "https://www.sec.gov/Archives/edgar/data/789019/000119312526027207/",
+    "10-Q 2025-09-30": "https://www.sec.gov/Archives/edgar/data/789019/000119312525256321/"
+   },
+   "irMetrics": "https://www.microsoft.com/en-us/Investor/earnings/FY-2026-Q4/metrics",
+   "segment": {
+    "what": "Intelligent Cloud 매출·영업이익, Azure 성장률, Microsoft Cloud 매출",
+    "from": "releases (8-K Ex99.1 부문 표·본문)"
+   },
+   "backlog": {
+    "what": "상업용 RPO(commercial remaining performance obligation)",
+    "from": "irMetrics (Commercial RPO 표, 분기별) — 2026-10-23 확인"
+   },
+   "balanceSheet": {
+    "from": "releases 2026-06-30 (재무상태표)",
+    "items": "현금·단기투자·차입금 각 줄·부채총계·자본총계"
+   },
+   "cashflow": {
+    "capex": "us-gaap/PaymentsToAcquirePropertyPlantAndEquipment",
+    "ocf": "us-gaap/NetCashProvidedByUsedInOperatingActivities",
+    "note": "현금흐름표는 누적값으로 공시 → 분기값은 누적 차이로 계산(정확값)"
+   },
+   "kpi": {
+    "what": "Microsoft Cloud 매출·매출총이익률, 상업용 예약 성장률, M365 상업용 클라우드·검색광고(TAC 제외)·LinkedIn·Xbox 성장률(달러/고정환율)",
+    "from": "irMetrics (분기마다 URL의 FY-YYYY-Qn 부분만 바꿈)",
+    "added": "2026-10-28"
+   }
+  },
+  "AMZN": {
+   "cik": "0001018724",
+   "fyEnd": "12-31",
+   "fin": {
+    "rev": "us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax",
+    "cost": "us-gaap/CostOfGoodsAndServicesSold",
+    "op": "us-gaap/OperatingIncomeLoss",
+    "ni": "us-gaap/NetIncomeLoss",
+    "eps": "us-gaap/EarningsPerShareDiluted"
+   },
+   "gpRule": "매출총이익 = 매출 − 매출원가(CostOfGoodsAndServicesSold)",
+   "shares": {
+    "concept": "dei/EntityCommonStockSharesOutstanding",
+    "kind": "cover"
+   },
+   "releases": {
+    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm"
+   },
+   "filings": {
+    "10-Q 2026-06-30": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm",
+    "10-Q 2026-03-31": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000014/amzn-20260331.htm"
+   },
+   "segment": {
+    "what": "AWS 매출·영업이익·성장률(환율 제외)",
+    "from": "releases (부문 표)"
+   },
+   "backlog": {
+    "what": "RPO(주로 AWS), 가중평균 잔여기간",
+    "from": "10-Q Note 1 Unearned Revenue (filings) — 2026-10-23 확인"
+   },
+   "balanceSheet": {
+    "from": "releases 2026-06-30 (재무상태표)",
+    "items": "현금·단기투자·차입금 각 줄·부채총계·자본총계"
+   },
+   "cashflow": {
+    "capex": "us-gaap/PaymentsToAcquireProductiveAssets",
+    "ocf": "us-gaap/NetCashProvidedByUsedInOperatingActivities",
+    "note": "현금흐름표는 누적값으로 공시 → 분기값은 누적 차이로 계산(정확값)"
+   },
+   "kpi": {
+    "what": "광고·구독·3P 셀러·온라인스토어 매출, 북미/해외 매출·영업이익(→ 이익률), 최근 12개월 FCF, 직원 수",
+    "from": "releases (보도자료 뒤쪽 Supplemental 분기 추이 표)",
+    "added": "2026-10-28"
+   }
+  },
+  "GOOGL": {
+   "cik": "0001652044",
+   "fyEnd": "12-31",
+   "fin": {
+    "rev": "us-gaap/Revenues",
+    "cost": "us-gaap/CostOfRevenue",
+    "op": "us-gaap/OperatingIncomeLoss",
+    "ni": "us-gaap/NetIncomeLoss",
+    "eps": "us-gaap/EarningsPerShareDiluted"
+   },
+   "gpRule": "매출총이익 = 매출 − 매출원가(CostOfRevenue)",
+   "shares": {
+    "concept": "us-gaap/WeightedAverageNumberOfDilutedSharesOutstanding",
+    "kind": "diluted",
+    "note": "클래스 A·B·C로 나뉘어 표지 주식 수가 XBRL에 합계로 없음 → 최근 분기 희석 가중평균 주식 수 사용"
+   },
+   "releases": {
+    "2026-06-30": "https://s206.q4cdn.com/479360582/files/doc_news/2026/Jul/22/attachments/2026q2-alphabet-earnings-release.pdf",
+    "2026-03-31": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000043/googexhibit991q12026.htm"
+   },
+   "irNews": "https://abc.xyz/investor/news/default.aspx",
+   "segment": {
+    "what": "Google Cloud 매출·영업이익",
+    "from": "releases (부문 표)"
+   },
+   "backlog": {
+    "what": "RPO(회사 전체, 그중 Google Cloud 금액)",
+    "from": "XBRL us-gaap/RevenueRemainingPerformanceObligation + 10-Q 매출 주석 문장(Google Cloud 분)"
+   },
+   "balanceSheet": {
+    "from": "releases 2026-06-30 (재무상태표)",
+    "items": "현금·단기투자·차입금 각 줄·부채총계·자본총계"
+   },
+   "cashflow": {
+    "capex": "us-gaap/PaymentsToAcquirePropertyPlantAndEquipment",
+    "ocf": "us-gaap/NetCashProvidedByUsedInOperatingActivities",
+    "note": "현금흐름표는 누적값으로 공시 → 분기값은 누적 차이로 계산(정확값)"
+   },
+   "kpi": {
+    "what": "검색·YouTube 광고·네트워크·구독플랫폼기기 매출, TAC, 직원 수",
+    "from": "releases (IR 보도자료 PDF; 해당 분기와 1년 전만 실림)",
+    "added": "2026-10-28"
+   },
+   "filings": {
+    "10-Q 2026-06-30": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000071/goog-20260630.htm"
+   }
+  },
+  "ORCL": {
+   "cik": "0001341439",
+   "fyEnd": "05-31",
+   "fin": {
+    "rev": "us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax",
+    "op": "us-gaap/OperatingIncomeLoss",
+    "ni": "us-gaap/NetIncomeLoss",
+    "eps": "us-gaap/EarningsPerShareDiluted"
+   },
+   "gpRule": "오라클은 매출총이익을 공시하지 않음 → null",
+   "shares": {
+    "concept": "dei/EntityCommonStockSharesOutstanding",
+    "kind": "cover"
+   },
+   "releases": {
+    "2026-08-31": "https://www.sec.gov/Archives/edgar/data/0001341439/000119312526387905/orcl-ex99_1.htm",
+    "2026-05-31": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526265848/orcl-ex99_1.htm",
+    "2026-02-28": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526100148/orcl-ex99_1.htm",
+    "2025-11-30": "https://www.sec.gov/Archives/edgar/data/1341439/000119312525314207/orcl-ex99_1.htm",
+    "2025-08-31": "https://www.sec.gov/Archives/edgar/data/1341439/000119312525199175/orcl-ex99_1.htm"
+   },
+   "filings": {
+    "10-Q 2026-08-31": "https://www.sec.gov/Archives/edgar/data/1341439/000119312526389274/orcl-20260831.htm"
+   },
+   "segment": {
+    "what": "클라우드 매출(IaaS+SaaS)·OCI(IaaS)·SaaS 매출과 USD 성장률, 분기·연간 설비투자",
+    "from": "releases (매출 표·현금흐름)"
+   },
+   "backlog": {
+    "what": "RPO",
+    "from": "releases 본문"
+   },
+   "guidance": {
+    "from": "releases 본문(다음 분기·연간 가이던스 문장)"
+   },
+   "balanceSheet": {
+    "from": "releases 2026-08-31 (재무상태표)",
+    "items": "현금·단기투자·차입금 각 줄·부채총계·자본총계"
+   },
+   "cashflow": {
+    "capex": "us-gaap/PaymentsToAcquirePropertyPlantAndEquipment",
+    "ocf": "us-gaap/NetCashProvidedByUsedInOperatingActivities",
+    "note": "현금흐름표는 누적값으로 공시 → 분기값은 누적 차이로 계산(정확값)"
+   },
+   "kpi": {
+    "what": "별도 카드 없음 — 클라우드 사업부 카드(RPO·OCI·SaaS)와 CAPEX·현금부채 카드가 핵심 지표를 이미 다룸"
+   }
+  },
+  "TSLA": {
+   "cik": "0001318605",
+   "fyEnd": "12-31",
+   "fin": {
+    "rev": "us-gaap/Revenues",
+    "gp": "us-gaap/GrossProfit",
+    "op": "us-gaap/OperatingIncomeLoss",
+    "ni": "us-gaap/NetIncomeLoss",
+    "eps": "us-gaap/EarningsPerShareDiluted"
+   },
+   "shares": {
+    "concept": "dei/EntityCommonStockSharesOutstanding",
+    "kind": "cover"
+   },
+   "releases": {
+    "2026-09-30": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026066738/exhibit9914.htm"
+   },
+   "note": "assets-ir.tesla.com PDF는 robots 차단 → SEC 8-K의 Ex99.1(HTML)을 쓴다.",
+   "balanceSheet": {
+    "from": "releases 2026-09-30 (재무상태표)",
+    "items": "현금·단기투자·차입금 각 줄·부채총계·자본총계"
+   },
+   "cashflow": {
+    "capex": "us-gaap/PaymentsToAcquirePropertyPlantAndEquipment",
+    "ocf": "us-gaap/NetCashProvidedByUsedInOperatingActivities",
+    "note": "현금흐름표는 누적값으로 공시 → 분기값은 누적 차이로 계산(정확값)"
+   },
+   "kpi": {
+    "what": "인도량·생산량·재고일수, 자동차 매출·규제크레딧·자동차 원가(→ 크레딧 제외 마진 계산), Active FSD Subscriptions·누적 인도량(→ 보급률 계산), 에너지 저장 설치 GWh·에너지 매출/원가, 슈퍼차저 커넥터, 로보택시 문장",
+    "from": "releases (분기 업데이트 Ex99.1의 Operational Summary·Financial Summary 5분기 표)",
+    "added": "2026-10-28"
+   },
+   "backlog": {
+    "what": "RPO(1년 초과 계약): 에너지 저장·발전 + 규제 크레딧, 12개월 내 인식액",
+    "from": "10-Q 매출 주석 'remaining performance obligations' (EFTS forms=10-Q로 문서 찾기); 전분기 합계는 XBRL us-gaap/RevenueRemainingPerformanceObligation"
+   },
+   "filings": {
+    "10-Q 2026-09-30": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026066775/tsla-20260930.htm"
+   }
+  },
+  "BE": {
+   "cik": "0001664703",
+   "fyEnd": "12-31",
+   "fin": {
+    "method": "releases",
+    "note": "XBRL 표준 항목(매출)이 비어 있어 8-K 보도자료 손익계산서를 쓴다."
+   },
+   "shares": {
+    "kind": "diluted",
+    "from": "최근 보도자료의 희석 가중평균 주식 수"
+   },
+   "releases": {
+    "2026-09-30": "https://www.sec.gov/Archives/edgar/data/0001664703/000162828026066890/ex991_q326financialresults.htm",
+    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/1664703/000162828026050150/ex991_q226financialresults.htm",
+    "2026-03-31": "https://www.sec.gov/Archives/edgar/data/1664703/000162828026027913/ex991_q126financialresults.htm",
+    "2025-12-31": "https://www.sec.gov/Archives/edgar/data/0001664703/000162828026005798/ex991_q42025financialresul.htm"
+   },
+   "backlog": {
+    "what": "총 수주잔고(연 1회, 4분기 보도자료)",
+    "from": "releases 2025-12-31"
+   },
+   "balanceSheet": {
+    "from": "releases 2026-09-30 (재무상태표)",
+    "items": "현금·단기투자·차입금 각 줄·부채총계·자본총계"
+   },
+   "cashflow": {
+    "from": "releases (현금흐름표: 영업활동 현금흐름, 설비투자)"
+   },
+   "kpi": {
+    "what": "매출 구성(제품/설치/서비스/전력), Non-GAAP 매출총이익률(전체/제품/서비스), Non-GAAP 영업이익, 연간 가이던스",
+    "from": "releases (Ex99.1) + 보충자료 Ex99.2 (같은 adsh의 ex992_*supplemental*.htm)",
+    "added": "2026-10-28"
+   },
+   "releasesExtra": {
+    "2026-09-30 supplemental": "https://www.sec.gov/Archives/edgar/data/1664703/000162828026066890/ex992_q32026supplemental.htm"
+   }
+  },
+  "IREN": {
+   "cik": "0001878848",
+   "fyEnd": "06-30",
+   "fin": {
+    "rev": "us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax",
+    "op": "us-gaap/OperatingIncomeLoss",
+    "ni": "us-gaap/NetIncomeLoss",
+    "eps": "us-gaap/EarningsPerShareDiluted"
+   },
+   "gpRule": "매출총이익 항목 없음 → null",
+   "shares": {
+    "concept": "dei/EntityCommonStockSharesOutstanding",
+    "kind": "cover"
+   },
+   "releases": {
+    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/0001878848/000187884826000051/irenreportsfy26results.htm"
+   },
+   "backlog": {
+    "what": "계약 ARR",
+    "from": "releases 본문"
+   },
+   "balanceSheet": {
+    "from": "releases 2026-06-30 (재무상태표)",
+    "items": "현금·단기투자·차입금 각 줄·부채총계·자본총계"
+   },
+   "cashflow": {
+    "capex": "us-gaap/PaymentsToAcquirePropertyPlantAndEquipment",
+    "ocf": "us-gaap/NetCashProvidedByUsedInOperatingActivities",
+    "note": "현금흐름표는 누적값으로 공시 → 분기값은 누적 차이로 계산(정확값)"
+   },
+   "kpi": {
+    "what": "AI 클라우드 매출, 비트코인 채굴 매출, 조정 EBITDA, 계약/가동 ARR, 용량 목표(MW), 마이크로소프트 계약 문장",
+    "from": "releases (분기 실적 Ex99.1) + Item 7.01 회사 발표",
+    "added": "2026-10-28"
+   },
+   "releasesExtra": {
+    "2026-08-13 Horizon 1": "https://www.sec.gov/Archives/edgar/data/1878848/000114036126032638/ef20080141_ex99-1.htm"
+   }
+  },
+  "SOFI": {
+   "cik": "0001818874",
+   "fyEnd": "12-31",
+   "fin": {
+    "rev": "us-gaap/RevenuesNetOfInterestExpense",
+    "ni": "us-gaap/NetIncomeLoss",
+    "eps": "us-gaap/EarningsPerShareDiluted"
+   },
+   "gpRule": "은행형 손익계산서라 매출총이익·영업이익 없음 → null",
+   "shares": {
+    "concept": "dei/EntityCommonStockSharesOutstanding",
+    "kind": "cover"
+   },
+   "releases": {
+    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/0001818874/000181887426000050/a2026q2earningsrelease.htm",
+    "2025-12-31": "https://www.sec.gov/Archives/edgar/data/1818874/000181887426000008/a2025q4earningsrelease.htm",
+    "2026-09-30": "https://www.sec.gov/Archives/edgar/data/1818874/000181887426000065/a2026q3earningsrelease.htm"
+   },
+   "backlog": {
+    "what": "없음 — 은행·핀테크라 수주잔고 개념이 없음 (2026-10-28 재확인). 화면에서 숨김"
+   },
+   "balanceSheet": {
+    "from": "releases 2026-06-30 (재무상태표)",
+    "items": "현금·단기투자·차입금 각 줄·부채총계·자본총계"
+   },
+   "kpi": {
+    "what": "회원·상품·기술플랫폼 계정(Table 5), 부문 매출·기여이익(Table 6), 수수료 기반 매출(Table 7), 대출 실행액(개인/학자금/주택), LPB 개인대출(본문), 순상각률(Table 8), 예금, 주당 유형장부가치",
+    "from": "releases (실적 보도자료 표·본문)",
+    "added": "2026-10-28"
+   },
+   "cashflow": {
+    "capex": "us-gaap/PaymentsToAcquireProductiveAssets",
+    "ocf": "us-gaap/NetCashProvidedByUsedInOperatingActivities",
+    "method": "XBRL (10-Q·10-K 누적값 차이)",
+    "fcf": "표시 안 함 — 판매목적 대출 실행·매각이 영업현금흐름에 포함돼 은행에선 의미 없음"
+   }
+  },
+  "GLW": {
+   "cik": "0000024741",
+   "fyEnd": "12-31",
+   "fin": {
+    "method": "releases",
+    "note": "XBRL 표준 매출 항목이 비어 있어 8-K 보도자료(GAAP 손익계산서)를 쓴다. 보도자료의 6개월 누적 − 2분기로 1분기를 계산."
+   },
+   "shares": {
+    "concept": "us-gaap/WeightedAverageNumberOfDilutedSharesOutstanding",
+    "kind": "diluted"
+   },
+   "releases": {
+    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/24741/000002474126000253/glw-20260728xex99xq22026.htm",
+    "2025-12-31": "https://www.sec.gov/Archives/edgar/data/24741/000002474126000034/glw-20251231xex99xq42025.htm",
+    "2025-09-30": "https://www.sec.gov/Archives/edgar/data/24741/000002474125000109/glw-20251028xex99.htm",
+    "2026-09-30": "https://www.sec.gov/Archives/edgar/data/24741/000002474126000273/glw-20261027xex99xq32026.htm"
+   },
+   "backlog": {
+    "what": "없음 — XBRL RPO 태그 없음, 10-Q 전문검색 'remaining performance obligations' 결과 없음 (2026-10-28 재확인). 화면에서 숨김"
+   },
+   "balanceSheet": {
+    "from": "releases 2026-06-30 (재무상태표)",
+    "items": "현금·단기투자·차입금 각 줄·부채총계·자본총계"
+   },
+   "cashflow": {
+    "from": "releases (현금흐름표: 영업활동 현금흐름, 설비투자)"
+   },
+   "kpi": {
+    "what": "광통신 매출·순이익, 엔터프라이즈 성장률(본문), 코어 매출·코어 영업이익률·코어 EPS, 다른 부문 매출, Springboard 문장, 다음 분기 가이던스",
+    "from": "releases (부문 표·본문)",
+    "added": "2026-10-28"
+   }
+  },
+  "RKLB": {
+   "cik": "0001819994",
+   "fyEnd": "12-31",
+   "fin": {
+    "rev": "us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax",
+    "gp": "us-gaap/GrossProfit",
+    "op": "us-gaap/OperatingIncomeLoss",
+    "ni": "us-gaap/NetIncomeLoss",
+    "eps": "us-gaap/EarningsPerShareDiluted"
+   },
+   "shares": {
+    "concept": "dei/EntityCommonStockSharesOutstanding",
+    "kind": "cover"
+   },
+   "releases": {
+    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/0001819994/000181999426000061/rklb-08102026ex991.htm"
+   },
+   "backlog": {
+    "what": "수주잔고",
+    "from": "releases 본문"
+   },
+   "balanceSheet": {
+    "from": "releases 2026-06-30 (재무상태표)",
+    "items": "현금·단기투자·차입금 각 줄·부채총계·자본총계"
+   },
+   "cashflow": {
+    "capex": "us-gaap/PaymentsToAcquirePropertyPlantAndEquipment",
+    "ocf": "us-gaap/NetCashProvidedByUsedInOperatingActivities",
+    "note": "현금흐름표는 누적값으로 공시 → 분기값은 누적 차이로 계산(정확값)"
+   },
+   "kpi": {
+    "what": "부문 매출(발사 서비스/우주 시스템, 10-Q 주석 3 — 분기 값 없으면 누적 차이 †), Non-GAAP 매출총이익률, 조정 EBITDA, 백로그 12개월 내 비율(10-Q), Neutron 문장, 가이던스",
+    "from": "releases + 10-Q (EFTS forms=10-Q로 찾기)",
+    "added": "2026-10-28"
+   },
+   "filings": {
+    "10-Q 2026-06-30": "https://www.sec.gov/Archives/edgar/data/1819994/000181999426000062/rklb-20260630.htm"
+   }
+  },
+  "VRT": {
+   "cik": "0001674101",
+   "fyEnd": "12-31",
+   "fin": {
+    "rev": "us-gaap/RevenueFromContractWithCustomerExcludingAssessedTax",
+    "cost": "us-gaap/CostOfGoodsAndServicesSold",
+    "op": "us-gaap/OperatingIncomeLoss",
+    "ni": "us-gaap/NetIncomeLoss",
+    "eps": "us-gaap/EarningsPerShareDiluted"
+   },
+   "gpRule": "매출총이익 = 매출 − 매출원가(CostOfGoodsAndServicesSold)",
+   "shares": {
+    "concept": "dei/EntityCommonStockSharesOutstanding",
+    "kind": "cover"
+   },
+   "releases": {
+    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/0001674101/000162828026050323/q22026exhibit991vrt07292026.htm",
+    "2025-12-31": "https://www.sec.gov/Archives/edgar/data/1674101/000167410126000006/exhibit991vrt02112026.htm"
+   },
+   "backlog": {
+    "what": "수주잔고(연 1회)",
+    "from": "releases 2025-12-31"
+   },
+   "balanceSheet": {
+    "from": "releases 2026-06-30 (재무상태표)",
+    "items": "현금·단기투자·차입금 각 줄·부채총계·자본총계"
+   },
+   "cashflow": {
+    "capex": "us-gaap/PaymentsToAcquirePropertyPlantAndEquipment",
+    "ocf": "us-gaap/NetCashProvidedByUsedInOperatingActivities",
+    "note": "현금흐름표는 누적값으로 공시 → 분기값은 누적 차이로 계산(정확값)"
+   },
+   "kpi": {
+    "what": "조정 영업이익률, 영업이익률, 조정 FCF, 지역별 유기적 매출 성장, 유기적 수주 증가율·Book-to-bill(공개될 때만, 주로 4분기), 가이던스",
+    "from": "releases (보도자료 본문·표)",
+    "added": "2026-10-28"
+   }
+  },
+  "NVDA": {
+   "cik": "0001045810",
+   "fyEnd": "01-25",
+   "fin": {
+    "rev": "us-gaap/Revenues",
+    "gp": "us-gaap/GrossProfit",
+    "op": "us-gaap/OperatingIncomeLoss",
+    "ni": "us-gaap/NetIncomeLoss",
+    "eps": "us-gaap/EarningsPerShareDiluted"
+   },
+   "fyNote": "회계연도는 1월 마지막 일요일 무렵 종료(52/53주). RevenueFromContractWithCustomerExcludingAssessedTax는 2022년 이후 비어 있음.",
+   "shares": {
+    "concept": "dei/EntityCommonStockSharesOutstanding",
+    "kind": "cover"
+   },
+   "releases": {
+    "2026-07-26": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27pr.htm"
+   },
+   "filings": {
+    "10-Q 2026-07-26": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000075/nvda-20260726.htm"
+   },
+   "backlog": {
+    "what": "RPO(1년 초과 계약)",
+    "from": "10-Q 매출 주석 (filings)"
+   },
+   "balanceSheet": {
+    "from": "filings 10-Q 2026-07-26 (재무상태표)",
+    "items": "현금·시장성 채무증권·단기/장기차입금·부채총계·자본총계"
+   },
+   "cashflow": {
+    "capex": "us-gaap/PaymentsToAcquireProductiveAssets",
+    "ocf": "us-gaap/NetCashProvidedByUsedInOperatingActivities",
+    "note": "PaymentsToAcquirePropertyPlantAndEquipment는 2020년 이후 비어 있음. 현금흐름표는 누적값 → 분기값은 누적 차이(정확값)"
+   },
+   "kpi": {
+    "what": "데이터센터 매출(하이퍼스케일 / AI 클라우드·산업·엔터프라이즈), 엣지 컴퓨팅, Non-GAAP 매출총이익률, 재고, 공급·생산능력 약정, 다음 분기 가이던스",
+    "from": "CFO 코멘트(8-K Ex99.2, 파일명 q{n}fy{yy}cfocommentary.htm, 보도자료와 같은 adsh)",
+    "added": "2026-10-28"
+   },
+   "releasesExtra": {
+    "2026-07-26 CFO commentary": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27cfocommentary.htm"
+   }
+  }
+ },
+ "nonOfficial": {
+  "prices": "PlayMCP UsStockInfo 커넥터 (시장 데이터)",
+  "consensus": "https://finance.yahoo.com/quote/{T}/analysis/ (애널리스트 추정치, 공시 아님)",
+  "analystRatings": "PlayMCP get_recommendations (애널리스트 의견, 공시 아님)",
+  "cloudShare": "https://www.srgresearch.com/articles/q2-cloud-market-passes-143-billion-highest-growth-rate-in-eight-years (시장조사기관 추정, 공시 아님)",
+  "fearGreed": "CNN graphdata"
+ },
+ "pending": [
+  {
+   "ticker": "GLW",
+   "item": "2026-03-31 분기 희석 EPS 정확값(현재 6개월−2분기 근사 0.42)",
+   "url": "코닝 1분기 실적 보도자료(8-K) — 주소 미확인; GLW XBRL EPS 항목은 비어 있음"
+  },
+  {
+   "ticker": "AMZN·GOOGL·MSFT·VRT·RKLB·IREN·NVDA",
+   "item": "다음 분기 실적 보도자료",
+   "url": "discovery(EDGAR 전문검색)로 매일 확인",
+   "note": "2026-10-28 확인: 아직 발표 전(VRT 8-K 2건은 인수 공시)."
+  },
+  "BE 생산능력(GW)·데이터센터 계약 규모 — 실적 자료에 숫자 없음",
+  "RKLB 분기 Electron 발사 횟수 — 실적 자료·10-Q에 집계 없음",
+  "IREN GPU 대수·현장별 가동 MW — FY26 자료에 숫자 없음"
+ ],
+ "kpiRule": "핵심 지표(stocks[T].kpi)는 새 분기 실적이 반영될 때 tickers[T].kpi.from 문서만 읽어 갱신: kpi.cols 맨 앞에 새 분기 날짜를 넣고 각 row.v 맨 앞에 값 추가(5개 유지), 문서에 없는 값은 null. calc 행은 공시 숫자로 다시 계산. facts·note·links는 새 문서 기준으로 교체. 공시에 없는 지표는 추정하지 않음.",
+ "emptyRule": "채울 숫자가 없는 영역은 화면에 띄우지 않음(빈 칸·'확인 후 채워요' 문구 금지). 영역을 비우기 전에 등록된 공시(XBRL·10-Q/10-K 전문검색 포함)를 한 번 더 확인하고, 그래도 없을 때만 숨김. 숨긴 이유는 sources.json에 기록."
+}
