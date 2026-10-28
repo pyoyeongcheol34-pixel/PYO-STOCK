@@ -307,8 +307,8 @@ table.qt.kpi tr.grp td.cur{border:0}
 .kpi-why{font-size:13px;color:var(--muted);line-height:1.55;background:var(--sunk);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:8px 12px}
 .kpi-facts .v{font-family:var(--sans);font-weight:500;text-align:left;padding-left:14px;white-space:normal}
 .kpi-facts{grid-template-columns:minmax(90px,max-content) minmax(0,1fr)}
-.kv.gd{grid-template-columns:minmax(92px,38%) minmax(0,1fr);column-gap:12px}
-.kv.gd .v{white-space:normal;word-break:keep-all}
+.kv.gd{grid-template-columns:minmax(92px,38%) minmax(0,1fr)}
+.kv.gd .v{white-space:normal;word-break:keep-all;padding-left:12px}
 table.qt.kpi tbody td.cur{background:var(--accent-soft)}
 @media (max-width:600px){table.qt.kpi td:first-child{white-space:normal;min-width:118px;max-width:140px;line-height:1.3}table.qt.kpi tr.grp td:first-child{max-width:none}}
 .memo{display:grid;grid-template-columns:180px 1fr;gap:10px}
@@ -996,14 +996,16 @@ function renderOutlook() {
   const rng = (a, k) => Array.isArray(a) ? (k === "eps" ? `${fnum(a[0])} – ${fnum(a[1])}` : `${fbig(a[0], cur)} – ${fbig(a[1], cur)}`) : "–";
   const fv = (v, k) => k === "eps" ? fnum(v) : fbig(v, cur);
   const row = (label, g, c, k, sub) => {
-    const gm = mid(g), d = isNum(gm) && c && isNum(c.avg) && c.avg ? gm / c.avg - 1 : NaN;
+    const isTxt = g && !Array.isArray(g) && g.text;
+    const gm = isTxt ? NaN : mid(g), d = isNum(gm) && c && isNum(c.avg) && c.avg ? gm / c.avg - 1 : NaN;
+    const gCell = isTxt ? esc(g.text) : g ? (g[0] === g[1] ? fv(g[0], k) : `${rng(g, k)}<div class="faint" style="font-size:11px">중간 ${fv(gm, k)}</div>`) : `<span class="faint">없음</span>`;
     return `<tr><td>${label}${sub ? `<div class="faint" style="font-size:11px">${sub}</div>` : ""}</td>
-      <td>${g ? `${rng(g, k)}<div class="faint" style="font-size:11px">중간 ${fv(gm, k)}</div>` : `<span class="faint">없음</span>`}</td>
+      <td>${gCell}</td>
       <td>${c && isNum(c.avg) ? `<b>${fv(c.avg, k)}</b><div class="faint" style="font-size:11px">${isNum(c.low) ? fv(c.low, k) + " – " + fv(c.high, k) : ""}${isNum(c.n) ? " · " + c.n + "명" : ""}</div>` : "–"}</td>
       <td class="${cls(d)}">${isNum(d) ? fpct(d) : "–"}</td><td>${verdict(d)}</td></tr>`;
   };
-  const gFind = re => (e.guidance || []).find(x => re.test(x.label) && isNum(x.low));
-  const gArr = x => x ? [x.low, x.high] : null;
+  const gFind = re => (e.guidance || []).find(x => re.test(x.label) && (isNum(x.low) || /\d/.test(x.text || "")));
+  const gArr = x => x ? (isNum(x.low) ? [x.low, isNum(x.high) ? x.high : x.low] : {text: x.text}) : null;
   const fy = (o.years || [])[0], ny = (o.years || [])[1];
   const fyTag = fy ? "FY" + String(fy.period).slice(2, 4) : "";
   const fyRev = fy ? gFind(new RegExp("^" + fyTag + "\\b.*매출$")) : null, fyEps = fy ? gFind(new RegExp("^" + fyTag + "\\b.*EPS")) : null;
@@ -1019,13 +1021,19 @@ function renderOutlook() {
     if (imp && imp.opInc) rows += `<tr><td>${qEndLabel(nq.period)} Non-GAAP 영업이익<div class="faint" style="font-size:11px">가이던스 암시치</div></td><td>${rng(imp.opInc, "big")}<div class="faint" style="font-size:11px">중간 ${fbig(mid(imp.opInc), cur)}</div></td><td>–</td><td>–</td><td>–</td></tr>`;
   }
   if (fy) {
-    rows += row(`FY${String(fy.period).slice(2, 4)} 매출`, gArr(fyRev), fy.rev, "big", fyRev ? "회사 가이던스" : "");
-    rows += row(`FY${String(fy.period).slice(2, 4)} EPS`, gArr(fyEps), fy.eps, "eps", fyEps ? "Non-GAAP 가이던스" : "");
+    rows += row(`FY${String(fy.period).slice(2, 4)} 매출`, gArr(fyRev), fy.rev, "big", fyRev ? esc(fyRev.label) : "");
+    rows += row(`FY${String(fy.period).slice(2, 4)} EPS`, gArr(fyEps), fy.eps, "eps", fyEps ? esc(fyEps.label) : "");
   }
   if (ny) {
-    rows += row(`FY${String(ny.period).slice(2, 4)} 매출`, null, ny.rev, "big", "");
-    rows += row(`FY${String(ny.period).slice(2, 4)} EPS`, null, ny.eps, "eps", "");
+    const nyTag = "FY" + String(ny.period).slice(2, 4);
+    const nyRev = gFind(new RegExp("^" + nyTag + "\\b.*매출$")), nyEps = gFind(new RegExp("^" + nyTag + "\\b.*EPS"));
+    rows += row(`${nyTag} 매출`, gArr(nyRev), ny.rev, "big", nyRev ? esc(nyRev.label) : "");
+    rows += row(`${nyTag} EPS`, gArr(nyEps), ny.eps, "eps", nyEps ? esc(nyEps.label) : "");
   }
+  const gAll = (e.guidance || []).filter(g => isNum(g.low) || /\d/.test(g.text || ""));
+  const gfmt2 = g => g.text ? esc(g.text) : g.unit === "eps" ? (g.low === g.high ? `$${fx(g.low, 2)}` : `$${fx(g.low, 2)} – $${fx(g.high, 2)}`) : (g.low === g.high || !isNum(g.high) ? fbig(g.low, cur) : `${fbig(g.low, cur)} – ${fbig(g.high, cur)}`);
+  const gList = gAll.length ? `<div><div class="lbl" style="margin-bottom:4px">회사가 제시한 가이던스 (원문 수치)</div><div class="kv gd">${gAll.map(g => `<div>${esc(g.label)}</div><div class="v">${gfmt2(g)}</div>`).join("")}</div></div>` : "";
+  const gSrc = e.guidanceUrl || e.url;
   const t = o.epsTrend;
   const trend = t && isNum(t.now) ? `<div class="note">${qEndLabel(t.period)} EPS 컨센서스 추이: 90일 전 ${fnum(t.d90)} → 60일 전 ${fnum(t.d60)} → 30일 전 ${fnum(t.d30)} → 현재 <b class="${cls(t.now - t.d90)}">${fnum(t.now)}</b></div>` : "";
   const nqY = nq ? `<div class="big2">
@@ -1033,12 +1041,13 @@ function renderOutlook() {
       <div><div class="lbl">${qEndLabel(nq.period)} EPS 컨센서스</div><div class="v">${fnum(nq.eps && nq.eps.avg)}</div><div class="note">전년동기 ${fnum(nq.eps && nq.eps.yearAgo)} 대비 ${epsTurn(nq.eps) || `<span class="${cls(yoy(nq.eps))}">${fpct(yoy(nq.eps))}</span>`}</div></div>
       ${imp ? `<div><div class="lbl">가이던스 암시 매출 (중간)</div><div class="v">${fbig(mid(imp.rev), cur)}</div><div class="note">컨센서스 대비 <span class="${cls(mid(imp.rev) / nq.rev.avg - 1)}">${fpct(mid(imp.rev) / nq.rev.avg - 1)}</span></div></div>` : ""}
     </div>` : "";
-  el.innerHTML = `<h3>다음 분기 전망 · 가이던스 vs 컨센서스 <small>가이던스 = 회사 보도자료 · 컨센서스 = 애널리스트 추정(${esc(o.source || "")}, 공시 아님) ${esc(o.asOf || "")}</small></h3>
+  el.innerHTML = `<h3>다음 분기 전망 · 가이던스 vs 컨센서스 <small>가이던스 = 회사 발표 자료 · 컨센서스 = 애널리스트 추정(${esc(o.source || "")}, 공시 아님) ${esc(o.asOf || "")}</small></h3>
     ${nqY}
     <div class="tbl-wrap"><table class="t gc"><thead><tr><th>항목</th><th>회사 가이던스</th><th>컨센서스 (평균)</th><th>차이</th><th>판정</th></tr></thead><tbody>${rows}</tbody></table></div>
+    ${gList}
     ${trend}
     <div class="note">${imp && imp.note ? esc(imp.note) + " " : ""}컨센서스는 실적 발표 직후 며칠 동안 발표 전 추정치가 남아 있을 수 있어요. 판정: ±1% 부합, 5% 이상 대폭.</div>
-    ${o.url ? `<div class="links"><a href="${esc(o.url)}" target="_blank" rel="noopener">컨센서스 원본 보기</a></div>` : ""}`;
+    <div class="links">${gAll.length && gSrc ? `<a href="${esc(gSrc)}" target="_blank" rel="noopener">가이던스 원문</a>` : ""}${o.url ? `<a href="${esc(o.url)}" target="_blank" rel="noopener">컨센서스 원본 보기</a>` : ""}</div>`;
 }
 
 function renderEarn() {
@@ -1068,9 +1077,7 @@ function renderEarn() {
         return `<div>${lb}${isNum(e.consensus.revActual) ? ` ${fbig(ra, cur)}` : ""} vs 발표 전 컨센서스 ${fbig(e.consensus.rev, cur)}</div><div class="v">${fpct(ra / e.consensus.rev - 1)} ${verdict(ra / e.consensus.rev - 1)}</div>`; })() : ""}
       ${isNum(e.consensus.eps) && isNum(e.nonGaapEps) ? `<div>Non-GAAP EPS vs 발표 전 컨센서스 ${fnum(e.consensus.eps)}</div><div class="v">${fpct(e.nonGaapEps / e.consensus.eps - 1)} ${verdict(e.nonGaapEps / e.consensus.eps - 1)}</div>` : ""}
     </div>` : ""}
-    ${Array.isArray(e.highlights) && e.highlights.length ? `<div><div class="lbl" style="margin-bottom:4px">이번 분기 주요 실적</div><div class="kv gd">${e.highlights.map(g => `<div>${esc(g.label)}</div><div class="v">${gfmt(g)}</div>`).join("")}</div></div>` : ""}
-    ${Array.isArray(e.guidance) && e.guidance.length ? `<div><div class="lbl" style="margin-bottom:4px">회사 가이던스 (앞으로의 전망)${e.guidanceNote ? " · " + esc(e.guidanceNote) : ""}</div><div class="kv gd">${e.guidance.map(g => `<div>${esc(g.label)}</div><div class="v">${gfmt(g)}</div>`).join("")}</div></div>` : ""}
-    ${e.note ? `<div class="note">${esc(e.note)}</div>` : ""}
+    ${Array.isArray(e.highlights) && e.highlights.some(g => /\d/.test(g.text || "")) ? `<div><div class="lbl" style="margin-bottom:4px">이번 분기 주요 실적</div><div class="kv gd">${e.highlights.filter(g => /\d/.test(g.text || "")).map(g => `<div>${esc(g.label)}</div><div class="v">${gfmt(g)}</div>`).join("")}</div></div>` : ""}
     ${e.url ? `<div class="links"><a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.urlLabel || "실적 보도자료 원문")}</a></div>` : ""}`;
 }
 

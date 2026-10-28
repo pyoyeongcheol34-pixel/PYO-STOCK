@@ -376,7 +376,7 @@
     "fcf": "표시 안 함 — 판매목적 대출 실행·매각이 영업현금흐름에 포함돼 은행에선 의미 없음"
    },
    "guidance": {
-    "from": "실적 보도자료(8-K Ex99.1/Ex99.2)의 Outlook·Guidance 문단"
+    "from": "실적 보도자료 Guidance 문단(FY 당해·익년 연간 수치, 분기 가이던스 없음)"
    }
   },
   "GLW": {
@@ -495,7 +495,7 @@
     "added": "2026-10-28"
    },
    "guidance": {
-    "from": "실적 보도자료(8-K Ex99.1/Ex99.2)의 Outlook·Guidance 문단"
+    "from": "실적 보도자료 가이던스 표(분기·연간: 매출, 유기적 성장, 조정 영업이익·마진, 조정 EPS, 조정 FCF) + 설비투자 문장"
    }
   },
   "NVDA": {
@@ -570,5 +570,5 @@
  ],
  "kpiRule": "핵심 지표(stocks[T].kpi)는 새 분기 실적이 반영될 때 tickers[T].kpi.from 문서만 읽어 갱신: kpi.cols 맨 앞에 새 분기 날짜를 넣고 각 row.v 맨 앞에 값 추가(5개 유지), 문서에 없는 값은 null. calc 행은 공시 숫자로 다시 계산. facts·note·links는 새 문서 기준으로 교체. 공시에 없는 지표는 추정하지 않음.",
  "emptyRule": "채울 숫자가 없는 영역은 화면에 띄우지 않음(빈 칸·'확인 후 채워요' 문구 금지). 영역을 비우기 전에 등록된 공시(XBRL·10-Q/10-K 전문검색 포함)를 한 번 더 확인하고, 그래도 없을 때만 숨김. 숨긴 이유는 sources.json에 기록.",
- "guidanceRule": "earnings.guidance에는 앞으로의 전망(회사가 제시한 다음 분기·연간 수치나 계획)만 넣고, 이번 분기 실제 수치는 earnings.highlights에 넣음. 보도자료에 가이던스가 없으면 tickers[T].guidance.from의 공식 문서(예: MSFT IR 웹캐스트 원고)를 확인. 숫자 가이던스를 내지 않는 회사는 그 사실을 guidance 첫 줄 또는 note에 적음."
+ "guidanceRule": "earnings.guidance = 회사가 제시한 앞으로의 전망만(다음 분기·연간 수치, 숫자·날짜가 있는 계획). 이번 분기 실제 수치는 earnings.highlights. 둘 다 숫자가 들어간 항목만 넣고 설명 문장(예: '숫자 가이던스 없음', 방향성 코멘트)은 넣지 않음 — 실적 발표 카드에는 확인된 숫자만 보이고, 가이던스는 '다음 분기 전망' 카드에 표시됨. 보도자료의 가이던스 표·Outlook 문단의 모든 항목(매출·영업이익·마진·EPS·FCF·설비투자·세율 등)을 빠짐없이 옮김. 단일 수치(약 X)는 low=high로. 분기 항목 라벨은 'FY'로 시작하지 않고, 연간 항목은 'FYyy '로 시작(다음 회계연도 포함). 보도자료에 가이던스가 없으면 tickers[T].guidance.from 문서(MSFT CFO 발표 원고 등)를 확인."
 }
