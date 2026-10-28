@@ -172,7 +172,7 @@
    "summary": {
     "from": "분기 10-Q 앞부분 재무제표: 손익계산서(3개월, 당해·전년 동기), 재무상태표(분기말·직전 연말), 현금흐름표(누적, 당해·전년). 10-Q 공시 전에는 8-K 보도자료의 같은 표 사용",
     "added": "2026-10-28",
-    "format": "earnings.summary = 표 3개 배열: ①손익계산서(3개월) cols=[당분기말, 전년 동기말] ②재무상태표 cols=[분기말, 직전 연말], colLabels ['YYYY.MM 말',...], chgLabel '변화' ③현금흐름(연초 누적) cols=[당분기말, 전년 동기말], colLabels ['YYYY 1~N분기' 또는 '상반기'], chgLabel '전년 대비'. 행 라벨·그룹은 PREV 그대로, 현금 유출 행(설비투자·자사주·배당)은 plain:true"
+    "format": "earnings.summary = 표 3개 배열: ①손익계산서(3개월) cols=[당분기말, 전년 동기말] ②재무상태표 cols=[분기말, 직전 연말], colLabels ['YYYY.MM 말',...], chgLabel '변화' ③현금흐름(연초 누적) cols=[당분기말, 전년 동기말], colLabels ['YYYY 1~N분기' 또는 '상반기'], chgLabel '전년 대비'. 행 라벨·그룹은 PREV 그대로, 현금 유출 행(설비투자·자사주·배당)은 plain:true · 합계 행(총매출·총비용·현금+유가증권 합계 등)은 kids: [구성 항목 라벨]을 지정해 접어서 표시(PREV의 kids 그대로 유지)"
    }
   },
   "ORCL": {
@@ -268,7 +268,7 @@
    "summary": {
     "from": "분기 업데이트(Ex99.1) 첫머리의 'FINANCIAL SUMMARY (Unaudited)' 표 — 5개 분기 열 그대로(백만 달러, %, 주당). 설비투자는 양수(유출액)로 저장",
     "added": "2026-10-28",
-    "format": "earnings.summary = 표 1개: cols=최근 5개 분기말(최신 먼저), 행 라벨·그룹은 PREV 그대로, 설비투자 행은 양수·plain:true"
+    "format": "earnings.summary = 표 1개: cols=최근 5개 분기말(최신 먼저), 행 라벨·그룹은 PREV 그대로, 설비투자 행은 양수·plain:true · 합계 행(총매출·총비용·현금+유가증권 합계 등)은 kids: [구성 항목 라벨]을 지정해 접어서 표시(PREV의 kids 그대로 유지)"
    }
   },
   "BE": {
@@ -582,7 +582,7 @@
   "RKLB 분기 Electron 발사 횟수 — 실적 자료·10-Q에 집계 없음",
   "IREN GPU 대수·현장별 가동 MW — FY26 자료에 숫자 없음"
  ],
- "kpiRule": "핵심 지표(stocks[T].kpi)는 새 분기 실적이 반영될 때 tickers[T].kpi.from 문서만 읽어 갱신: kpi.cols 맨 앞에 새 분기 날짜를 넣고 각 row.v 맨 앞에 값 추가(5개 유지), 문서에 없는 값은 null. calc 행은 공시 숫자로 다시 계산. facts·note·links는 새 문서 기준으로 교체. 공시에 없는 지표는 추정하지 않음.",
+ "kpiRule": "핵심 지표(stocks[T].kpi)는 새 분기 실적이 반영될 때 tickers[T].kpi.from 문서만 읽어 갱신: kpi.cols 맨 앞에 새 분기 날짜를 넣고 각 row.v 맨 앞에 값 추가(5개 유지), 문서에 없는 값은 null. calc 행은 공시 숫자로 다시 계산. facts·note·links는 새 문서 기준으로 교체. 공시에 없는 지표는 추정하지 않음. 하위 항목 행은 라벨을 '· '로 시작하면 바로 위 행 아래로 접혀서 표시됨.",
  "emptyRule": "채울 숫자가 없는 영역은 화면에 띄우지 않음(빈 칸·'확인 후 채워요' 문구 금지). 영역을 비우기 전에 등록된 공시(XBRL·10-Q/10-K 전문검색 포함)를 한 번 더 확인하고, 그래도 없을 때만 숨김. 숨긴 이유는 sources.json에 기록.",
  "guidanceRule": "earnings.guidance = 회사가 제시한 앞으로의 전망만(다음 분기·연간 수치, 숫자·날짜가 있는 계획). 이번 분기 실제 수치는 earnings.highlights. 둘 다 숫자가 들어간 항목만 넣고 설명 문장(예: '숫자 가이던스 없음', 방향성 코멘트)은 넣지 않음 — 실적 발표 카드에는 확인된 숫자만 보이고, 가이던스는 '다음 분기 전망' 카드에 표시됨. 보도자료의 가이던스 표·Outlook 문단의 모든 항목(매출·영업이익·마진·EPS·FCF·설비투자·세율 등)을 빠짐없이 옮김. 단일 수치(약 X)는 low=high로. 분기 항목 라벨은 'FY'로 시작하지 않고, 연간 항목은 'FYyy '로 시작(다음 회계연도 포함). 보도자료에 가이던스가 없으면 tickers[T].guidance.from 문서(MSFT CFO 발표 원고 등)를 확인."
 }

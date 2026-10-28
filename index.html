@@ -308,6 +308,16 @@ table.qt.kpi tr.grp td.cur{border:0}
 .kpi-facts .v{font-family:var(--sans);font-weight:500;text-align:left;padding-left:14px;white-space:normal}
 .kpi-facts{grid-template-columns:minmax(90px,max-content) minmax(0,1fr)}
 .kv.gd{grid-template-columns:minmax(92px,38%) minmax(0,1fr)}
+table.t tr.kid{display:none}
+table.t tr.kid.open{display:table-row}
+table.t tr.kid td:first-child{padding-left:18px;color:var(--muted);font-size:12.5px}
+table.t tr.kid td{font-size:12.5px;color:var(--muted)}
+table.t tr.kid td.cur{color:var(--ink)}
+table.t tr.tog{cursor:pointer}
+table.t tr.tog:hover td{background:var(--accent-soft)}
+table.t tr.tog:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tg-ic{display:inline-block;width:14px;color:var(--accent);font-size:11px;transition:transform .15s}
+tr.tog[aria-expanded="true"] .tg-ic{transform:rotate(90deg)}
 .kv.gd .v{white-space:normal;word-break:keep-all;padding-left:12px}
 table.qt.kpi tbody td.cur{background:var(--accent-soft)}
 @media (max-width:600px){table.qt.kpi td:first-child{white-space:normal;min-width:118px;max-width:140px;line-height:1.3}table.qt.kpi tr.grp td:first-child{max-width:none}}
@@ -1050,6 +1060,36 @@ function renderOutlook() {
     <div class="links">${gAll.length && gSrc ? `<a href="${esc(gSrc)}" target="_blank" rel="noopener">가이던스 원문</a>` : ""}${o.url ? `<a href="${esc(o.url)}" target="_blank" rel="noopener">컨센서스 원본 보기</a>` : ""}</div>`;
 }
 
+/* group a total row with its component rows: components collapse under the total (click to expand) */
+let togSeq = 0;
+function groupRows(rows) {
+  // returns [{row, role: "plain"|"parent"|"kid", id}] in display order
+  const out = [], byLabel = new Map(rows.map(r => [r.label, r]));
+  const kidOf = new Map();
+  rows.forEach(r => (r.kids || []).forEach(l => { if (byLabel.has(l)) kidOf.set(l, r.label); }));
+  let lastParent = null;
+  rows.forEach(r => { if (/^·\s/.test(r.label) && lastParent && !kidOf.has(r.label)) { kidOf.set(r.label, lastParent.label); (lastParent._auto = lastParent._auto || []).push(r.label); } else if (!/^·\s/.test(r.label)) lastParent = r; });
+  const parents = new Set([...kidOf.values()]), done = new Set();
+  const ids = new Map([...parents].map(l => [l, "tg" + (++togSeq)]));
+  const emitParent = p => { if (done.has(p.label)) return; done.add(p.label); out.push({row: p, role: "parent", id: ids.get(p.label)});
+    rows.filter(k => kidOf.get(k.label) === p.label).forEach(k => { done.add(k.label); out.push({row: k, role: "kid", id: ids.get(p.label)}); }); };
+  rows.forEach(r => {
+    if (done.has(r.label)) return;
+    if (kidOf.has(r.label)) { const p = byLabel.get(kidOf.get(r.label)); if (p) emitParent(p); return; }
+    if (parents.has(r.label)) { emitParent(r); return; }
+    done.add(r.label); out.push({row: r, role: "plain"});
+  });
+  return out;
+}
+const trOpen = (x, cls = "") => x.role === "parent" ? `<tr class="tog ${cls}" data-tog="${x.id}" tabindex="0" aria-expanded="false">` : x.role === "kid" ? `<tr class="kid ${cls}" data-p="${x.id}">` : `<tr${cls ? ` class="${cls}"` : ""}>`;
+const togMark = x => x.role === "parent" ? '<span class="tg-ic" aria-hidden="true">▸</span>' : "";
+document.addEventListener("click", ev => {
+  const tr = ev.target.closest && ev.target.closest("tr[data-tog]"); if (!tr) return;
+  const id = tr.dataset.tog, open = tr.getAttribute("aria-expanded") !== "true";
+  tr.setAttribute("aria-expanded", open ? "true" : "false");
+  tr.closest("tbody").querySelectorAll(`tr[data-p="${id}"]`).forEach(k => k.classList.toggle("open", open));
+});
+document.addEventListener("keydown", ev => { if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches && ev.target.matches("tr[data-tog]")) { ev.preventDefault(); ev.target.click(); } });
 function summaryTable(sm, cur) {
   const cols = Array.isArray(sm.cols) ? sm.cols : [];
   if (!cols.length || !Array.isArray(sm.groups)) return "";
@@ -1062,8 +1102,7 @@ function summaryTable(sm, cur) {
   const ch = (row, j, first) => { const b = j >= 0 ? row.v[j] : null; let h = row.plain ? plainChg(row.v[0], b) : chgCell(row.v[0], b, isP(row.unit)); return first ? h.replace('<td class="', '<td class="chg-first ') : h; };
   const chgs = sm.chgLabel ? [[sm.chgLabel, 1]] : [["QoQ", iQ], ["YoY", iY]].filter(x => x[1] >= 0);
   const n = cols.length + 1 + chgs.length;
-  const body = sm.groups.map(g => `<tr class="grp"><td colspan="${n}">${esc(g.name)}</td></tr>` + (g.rows || []).map(row =>
-    `<tr><td>${row.bold ? `<b>${esc(row.label)}</b>` : esc(row.label)}</td>${cols.map((_, i) => `<td class="${i === 0 ? "hl cur" : ""}${!isP(row.unit) && isNum(row.v[i]) && row.v[i] < 0 ? " down" : ""}">${fmt(row.v[i], row.unit)}</td>`).join("")}${chgs.map((c, k) => ch(row, c[1], k === 0)).join("")}</tr>`).join("")).join("");
+  const body = sm.groups.map(g => `<tr class="grp"><td colspan="${n}">${esc(g.name)}</td></tr>` + groupRows(g.rows || []).map(x => { const row = x.row; return `${trOpen(x)}<td>${togMark(x)}${row.bold ? `<b>${esc(row.label)}</b>` : esc(row.label)}</td>${cols.map((_, i) => `<td class="${i === 0 ? "hl cur" : ""}${!isP(row.unit) && isNum(row.v[i]) && row.v[i] < 0 ? " down" : ""}">${fmt(row.v[i], row.unit)}</td>`).join("")}${chgs.map((c, k) => ch(row, c[1], k === 0)).join("")}</tr>`; }).join("")).join("");
   return `<div><div class="lbl" style="margin-bottom:4px">${esc(sm.title || "실적 자료 요약")}${sm.src ? ` <span class="faint" style="font-weight:400;text-transform:none;letter-spacing:0">· ${esc(sm.src)}</span>` : ""}</div>
     <div class="tbl-wrap"><table class="t qt kpi" style="min-width:${Math.min(620, 120 + (cols.length + chgs.length) * 80)}px"><thead><tr><th>항목</th>${cols.map((_, i) => `<th class="${i === 0 ? "cur" : ""}">${esc(lab(i))}</th>`).join("")}${chgs.map((c, k) => `<th${k === 0 ? ' class="chg-first"' : ""}>${esc(c[0])}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table></div></div>`;
 }
@@ -1468,8 +1507,7 @@ function renderKpi() {
     return `<td class="${i === 0 ? "hl cur" : ""}${neg}">${row.approx && isNum(v) ? "약 " : ""}${kpiFmt(v, row.unit, cur)}${d ? "†" : ""}${alt}</td>`;
   };
   const ncol = cols.length + 3;
-  const body = k.groups.map(g => `<tr class="grp"><td colspan="${ncol}">${esc(g.name)}</td></tr>` + (g.rows || []).map(row =>
-    `<tr><td>${esc(row.label)}${row.calc ? ' <span class="faint" title="공시 숫자로 계산">ⓒ</span>' : ""}</td>${cols.map((_, i) => cell(row, i)).join("")}${chg(row, iQ, true)}${chg(row, iY, false)}</tr>`).join("")).join("");
+  const body = k.groups.map(g => `<tr class="grp"><td colspan="${ncol}">${esc(g.name)}</td></tr>` + groupRows(g.rows || []).map(x => { const row = x.row; return `${trOpen(x)}<td>${togMark(x)}${esc(x.role === "kid" ? row.label.replace(/^·\s*/, "") : row.label)}${row.calc ? ' <span class="faint" title="공시 숫자로 계산">ⓒ</span>' : ""}</td>${cols.map((_, i) => cell(row, i)).join("")}${chg(row, iQ, true)}${chg(row, iY, false)}</tr>`; }).join("")).join("");
   const table = `<div class="tbl-wrap"><table class="t qt kpi"><thead><tr><th>항목</th>${cols.map((_, i) => `<th class="${i === 0 ? "cur" : ""}">${esc(lab(i))}</th>`).join("")}<th class="chg-first">${iQ >= 0 ? "QoQ" : "전분기"}</th><th>YoY</th></tr></thead><tbody>${body}</tbody></table></div>`;
   const tl = rows.filter(r => r.tile).slice(0, 4).map(row => {
     const i = row.v.findIndex(v => isNum(v) || (row.unit === "txt" && v));
