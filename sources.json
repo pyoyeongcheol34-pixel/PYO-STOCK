@@ -84,7 +84,11 @@
     "kind": "cover"
    },
    "releases": {
-    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm"
+    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000024/amzn-20260630xex991.htm",
+    "2025-06-30": "https://www.sec.gov/Archives/edgar/data/1018724/000101872425000084/amzn-20250630xex991.htm",
+    "2025-09-30": "https://www.sec.gov/Archives/edgar/data/1018724/000101872425000121/amzn-20250930xex991.htm",
+    "2025-12-31": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000002/amzn-20251231xex991.htm",
+    "2026-03-31": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000012/amzn-20260331xex991.htm"
    },
    "filings": {
     "10-Q 2026-06-30": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm",
@@ -114,6 +118,16 @@
    },
    "guidance": {
     "from": "실적 보도자료(8-K Ex99.1/Ex99.2)의 Outlook·Guidance 문단"
+   },
+   "ir": {
+    "page": "https://ir.aboutamazon.com/overview/default.aspx",
+    "quarterly": "https://ir.aboutamazon.com/quarterly-results/default.aspx",
+    "note": "사용자 지정 대표 출처(2026-10-28). 문서 목록 자동 읽기가 안 되면 같은 문서를 SEC EDGAR(8-K Ex99.1)에서 읽음"
+   },
+   "summary": {
+    "from": "분기 실적 보도자료(8-K Ex99.1)의 손익계산서·부문 정보·재무상태표·현금흐름표(3개월)",
+    "format": "earnings.summary = 표 3개, 모두 cols=최근 5개 분기말(최신 먼저): ①손익계산서(분기: 부문별 매출→총매출 접기, 6개 비용→총영업비용 접기, 부문별 영업이익→영업이익 접기, 영업이익률·AWS 영업이익률 계산, 순이익(영업외·세전·법인세·지분법 접기)·기본/희석 EPS 굵게) ②재무상태표(분기말) ③현금흐름(분기 3개월; 잉여현금흐름 = 영업CF − 설비투자 + 매각·인센티브, 회사 정의). 새 분기는 맨 앞에 넣고 5개로 자름. 행 라벨·kids·굵게·plain은 PREV 그대로. earnings.summaryCovers=['q','bs','cf'] 유지",
+    "added": "2026-10-28"
    }
   },
   "GOOGL": {
