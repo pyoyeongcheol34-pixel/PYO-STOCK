@@ -307,6 +307,8 @@ table.qt.kpi tr.grp td.cur{border:0}
 .kpi-why{font-size:13px;color:var(--muted);line-height:1.55;background:var(--sunk);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:8px 12px}
 .kpi-facts .v{font-family:var(--sans);font-weight:500;text-align:left;padding-left:14px;white-space:normal}
 .kpi-facts{grid-template-columns:minmax(90px,max-content) minmax(0,1fr)}
+.kv.gd{grid-template-columns:minmax(92px,38%) minmax(0,1fr);column-gap:12px}
+.kv.gd .v{white-space:normal;word-break:keep-all}
 table.qt.kpi tbody td.cur{background:var(--accent-soft)}
 @media (max-width:600px){table.qt.kpi td:first-child{white-space:normal;min-width:118px;max-width:140px;line-height:1.3}table.qt.kpi tr.grp td:first-child{max-width:none}}
 .memo{display:grid;grid-template-columns:180px 1fr;gap:10px}
@@ -1002,8 +1004,9 @@ function renderOutlook() {
   };
   const gFind = re => (e.guidance || []).find(x => re.test(x.label) && isNum(x.low));
   const gArr = x => x ? [x.low, x.high] : null;
-  const fyRev = gFind(/매출$/), fyEps = gFind(/EPS/);
   const fy = (o.years || [])[0], ny = (o.years || [])[1];
+  const fyTag = fy ? "FY" + String(fy.period).slice(2, 4) : "";
+  const fyRev = fy ? gFind(new RegExp("^" + fyTag + "\\b.*매출$")) : null, fyEps = fy ? gFind(new RegExp("^" + fyTag + "\\b.*EPS")) : null;
   const yoy = (c) => c && isNum(c.avg) && isNum(c.yearAgo) && c.yearAgo > 0 && c.avg > 0 ? c.avg / c.yearAgo - 1 : NaN;
   const epsTurn = (c) => !c || !isNum(c.avg) || !isNum(c.yearAgo) ? "" :
     c.avg < 0 && c.yearAgo >= 0 ? `<span class="down">적자 전환</span>` :
@@ -1065,7 +1068,8 @@ function renderEarn() {
         return `<div>${lb}${isNum(e.consensus.revActual) ? ` ${fbig(ra, cur)}` : ""} vs 발표 전 컨센서스 ${fbig(e.consensus.rev, cur)}</div><div class="v">${fpct(ra / e.consensus.rev - 1)} ${verdict(ra / e.consensus.rev - 1)}</div>`; })() : ""}
       ${isNum(e.consensus.eps) && isNum(e.nonGaapEps) ? `<div>Non-GAAP EPS vs 발표 전 컨센서스 ${fnum(e.consensus.eps)}</div><div class="v">${fpct(e.nonGaapEps / e.consensus.eps - 1)} ${verdict(e.nonGaapEps / e.consensus.eps - 1)}</div>` : ""}
     </div>` : ""}
-    ${Array.isArray(e.guidance) && e.guidance.length ? `<div><div class="lbl" style="margin-bottom:4px">회사 가이던스${e.guidanceNote ? " · " + esc(e.guidanceNote) : ""}</div><div class="kv">${e.guidance.map(g => `<div>${esc(g.label)}</div><div class="v">${gfmt(g)}</div>`).join("")}</div></div>` : ""}
+    ${Array.isArray(e.highlights) && e.highlights.length ? `<div><div class="lbl" style="margin-bottom:4px">이번 분기 주요 실적</div><div class="kv gd">${e.highlights.map(g => `<div>${esc(g.label)}</div><div class="v">${gfmt(g)}</div>`).join("")}</div></div>` : ""}
+    ${Array.isArray(e.guidance) && e.guidance.length ? `<div><div class="lbl" style="margin-bottom:4px">회사 가이던스 (앞으로의 전망)${e.guidanceNote ? " · " + esc(e.guidanceNote) : ""}</div><div class="kv gd">${e.guidance.map(g => `<div>${esc(g.label)}</div><div class="v">${gfmt(g)}</div>`).join("")}</div></div>` : ""}
     ${e.note ? `<div class="note">${esc(e.note)}</div>` : ""}
     ${e.url ? `<div class="links"><a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.urlLabel || "실적 보도자료 원문")}</a></div>` : ""}`;
 }

@@ -62,6 +62,10 @@
     "what": "Microsoft Cloud 매출·매출총이익률, 상업용 예약 성장률, M365 상업용 클라우드·검색광고(TAC 제외)·LinkedIn·Xbox 성장률(달러/고정환율)",
     "from": "irMetrics (분기마다 URL의 FY-YYYY-Qn 부분만 바꿈)",
     "added": "2026-10-28"
+   },
+   "guidance": {
+    "from": "https://www.microsoft.com/en-us/investor/events/fy-YYYY/earnings-fy-YYYY-qN (CFO prepared remarks — 'outlook' 문단). 보도자료에는 가이던스 없음",
+    "last": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q4"
    }
   },
   "AMZN": {
@@ -107,6 +111,9 @@
     "what": "광고·구독·3P 셀러·온라인스토어 매출, 북미/해외 매출·영업이익(→ 이익률), 최근 12개월 FCF, 직원 수",
     "from": "releases (보도자료 뒤쪽 Supplemental 분기 추이 표)",
     "added": "2026-10-28"
+   },
+   "guidance": {
+    "from": "실적 보도자료(8-K Ex99.1/Ex99.2)의 Outlook·Guidance 문단"
    }
   },
   "GOOGL": {
@@ -154,6 +161,9 @@
    },
    "filings": {
     "10-Q 2026-06-30": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000071/goog-20260630.htm"
+   },
+   "guidance": {
+    "from": "보도자료에 숫자 가이던스 없음. 설비투자 전망은 컨퍼런스 콜에서만 언급(abc.xyz 원고는 스크립트 렌더링이라 읽기 불가)"
    }
   },
   "ORCL": {
@@ -242,6 +252,9 @@
    },
    "filings": {
     "10-Q 2026-09-30": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026066775/tsla-20260930.htm"
+   },
+   "guidance": {
+    "from": "분기 업데이트(Ex99.1)의 Outlook 문단 + 생산능력 표. 매출·EPS·인도량 숫자 가이던스는 내지 않음(2026-10-28 재확인)"
    }
   },
   "BE": {
@@ -279,6 +292,9 @@
    },
    "releasesExtra": {
     "2026-09-30 supplemental": "https://www.sec.gov/Archives/edgar/data/1664703/000162828026066890/ex992_q32026supplemental.htm"
+   },
+   "guidance": {
+    "from": "실적 보도자료(8-K Ex99.1/Ex99.2)의 Outlook·Guidance 문단"
    }
   },
   "IREN": {
@@ -318,6 +334,9 @@
    },
    "releasesExtra": {
     "2026-08-13 Horizon 1": "https://www.sec.gov/Archives/edgar/data/1878848/000114036126032638/ef20080141_ex99-1.htm"
+   },
+   "guidance": {
+    "from": "실적 보도자료(8-K Ex99.1/Ex99.2)의 Outlook·Guidance 문단"
    }
   },
   "SOFI": {
@@ -355,6 +374,9 @@
     "ocf": "us-gaap/NetCashProvidedByUsedInOperatingActivities",
     "method": "XBRL (10-Q·10-K 누적값 차이)",
     "fcf": "표시 안 함 — 판매목적 대출 실행·매각이 영업현금흐름에 포함돼 은행에선 의미 없음"
+   },
+   "guidance": {
+    "from": "실적 보도자료(8-K Ex99.1/Ex99.2)의 Outlook·Guidance 문단"
    }
   },
   "GLW": {
@@ -388,6 +410,9 @@
     "what": "광통신 매출·순이익, 엔터프라이즈 성장률(본문), 코어 매출·코어 영업이익률·코어 EPS, 다른 부문 매출, Springboard 문장, 다음 분기 가이던스",
     "from": "releases (부문 표·본문)",
     "added": "2026-10-28"
+   },
+   "guidance": {
+    "from": "실적 보도자료(8-K Ex99.1/Ex99.2)의 Outlook·Guidance 문단"
    }
   },
   "RKLB": {
@@ -427,6 +452,9 @@
    },
    "filings": {
     "10-Q 2026-06-30": "https://www.sec.gov/Archives/edgar/data/1819994/000181999426000062/rklb-20260630.htm"
+   },
+   "guidance": {
+    "from": "실적 보도자료(8-K Ex99.1/Ex99.2)의 Outlook·Guidance 문단"
    }
   },
   "VRT": {
@@ -465,6 +493,9 @@
     "what": "조정 영업이익률, 영업이익률, 조정 FCF, 지역별 유기적 매출 성장, 유기적 수주 증가율·Book-to-bill(공개될 때만, 주로 4분기), 가이던스",
     "from": "releases (보도자료 본문·표)",
     "added": "2026-10-28"
+   },
+   "guidance": {
+    "from": "실적 보도자료(8-K Ex99.1/Ex99.2)의 Outlook·Guidance 문단"
    }
   },
   "NVDA": {
@@ -508,6 +539,9 @@
    },
    "releasesExtra": {
     "2026-07-26 CFO commentary": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000073/q2fy27cfocommentary.htm"
+   },
+   "guidance": {
+    "from": "실적 보도자료(8-K Ex99.1/Ex99.2)의 Outlook·Guidance 문단"
    }
   }
  },
@@ -535,5 +569,6 @@
   "IREN GPU 대수·현장별 가동 MW — FY26 자료에 숫자 없음"
  ],
  "kpiRule": "핵심 지표(stocks[T].kpi)는 새 분기 실적이 반영될 때 tickers[T].kpi.from 문서만 읽어 갱신: kpi.cols 맨 앞에 새 분기 날짜를 넣고 각 row.v 맨 앞에 값 추가(5개 유지), 문서에 없는 값은 null. calc 행은 공시 숫자로 다시 계산. facts·note·links는 새 문서 기준으로 교체. 공시에 없는 지표는 추정하지 않음.",
- "emptyRule": "채울 숫자가 없는 영역은 화면에 띄우지 않음(빈 칸·'확인 후 채워요' 문구 금지). 영역을 비우기 전에 등록된 공시(XBRL·10-Q/10-K 전문검색 포함)를 한 번 더 확인하고, 그래도 없을 때만 숨김. 숨긴 이유는 sources.json에 기록."
+ "emptyRule": "채울 숫자가 없는 영역은 화면에 띄우지 않음(빈 칸·'확인 후 채워요' 문구 금지). 영역을 비우기 전에 등록된 공시(XBRL·10-Q/10-K 전문검색 포함)를 한 번 더 확인하고, 그래도 없을 때만 숨김. 숨긴 이유는 sources.json에 기록.",
+ "guidanceRule": "earnings.guidance에는 앞으로의 전망(회사가 제시한 다음 분기·연간 수치나 계획)만 넣고, 이번 분기 실제 수치는 earnings.highlights에 넣음. 보도자료에 가이던스가 없으면 tickers[T].guidance.from의 공식 문서(예: MSFT IR 웹캐스트 원고)를 확인. 숫자 가이던스를 내지 않는 회사는 그 사실을 guidance 첫 줄 또는 note에 적음."
 }
