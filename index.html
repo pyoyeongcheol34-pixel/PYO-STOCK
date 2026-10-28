@@ -1050,6 +1050,21 @@ function renderOutlook() {
     <div class="links">${gAll.length && gSrc ? `<a href="${esc(gSrc)}" target="_blank" rel="noopener">가이던스 원문</a>` : ""}${o.url ? `<a href="${esc(o.url)}" target="_blank" rel="noopener">컨센서스 원본 보기</a>` : ""}</div>`;
 }
 
+function summaryTable(sm, cur) {
+  const cols = Array.isArray(sm.cols) ? sm.cols : [];
+  if (!cols.length || !Array.isArray(sm.groups)) return "";
+  const lab = i => sm.colLabels && sm.colLabels[i] ? sm.colLabels[i] : qLabel(cols[i]);
+  const mi = d => +String(d).slice(0, 4) * 12 + +String(d).slice(5, 7);
+  const iQ = cols.findIndex(d => mi(d) === mi(cols[0]) - 3), iY = cols.findIndex(d => mi(d) === mi(cols[0]) - 12);
+  const isP = u => u === "pct";
+  const fmt = (v, u) => u === "eps" ? fnum(v) : u === "pct" ? fpctRaw(v, 1) : kpiFmt(v, u, cur);
+  const ch = (row, j, first) => { let h = chgCell(row.v[0], j >= 0 ? row.v[j] : null, isP(row.unit)); return first ? h.replace('<td class="', '<td class="chg-first ') : h; };
+  const n = cols.length + 3;
+  const body = sm.groups.map(g => `<tr class="grp"><td colspan="${n}">${esc(g.name)}</td></tr>` + (g.rows || []).map(row =>
+    `<tr><td>${row.bold ? `<b>${esc(row.label)}</b>` : esc(row.label)}</td>${cols.map((_, i) => `<td class="${i === 0 ? "hl cur" : ""}${!isP(row.unit) && isNum(row.v[i]) && row.v[i] < 0 ? " down" : ""}">${fmt(row.v[i], row.unit)}</td>`).join("")}${ch(row, iQ, true)}${ch(row, iY, false)}</tr>`).join("")).join("");
+  return `<div><div class="lbl" style="margin-bottom:4px">${esc(sm.title || "실적 자료 요약")}${sm.src ? ` <span class="faint" style="font-weight:400;text-transform:none;letter-spacing:0">· ${esc(sm.src)}</span>` : ""}</div>
+    <div class="tbl-wrap"><table class="t qt kpi"><thead><tr><th>항목</th>${cols.map((_, i) => `<th class="${i === 0 ? "cur" : ""}">${esc(lab(i))}</th>`).join("")}<th class="chg-first">QoQ</th><th>YoY</th></tr></thead><tbody>${body}</tbody></table></div></div>`;
+}
 function renderEarn() {
   const el = $("#d-earn"); if (!el) return;
   const e = D.earnings;
@@ -1077,6 +1092,7 @@ function renderEarn() {
         return `<div>${lb}${isNum(e.consensus.revActual) ? ` ${fbig(ra, cur)}` : ""} vs 발표 전 컨센서스 ${fbig(e.consensus.rev, cur)}</div><div class="v">${fpct(ra / e.consensus.rev - 1)} ${verdict(ra / e.consensus.rev - 1)}</div>`; })() : ""}
       ${isNum(e.consensus.eps) && isNum(e.nonGaapEps) ? `<div>Non-GAAP EPS vs 발표 전 컨센서스 ${fnum(e.consensus.eps)}</div><div class="v">${fpct(e.nonGaapEps / e.consensus.eps - 1)} ${verdict(e.nonGaapEps / e.consensus.eps - 1)}</div>` : ""}
     </div>` : ""}
+    ${e.summary ? summaryTable(e.summary, cur) : ""}
     ${Array.isArray(e.highlights) && e.highlights.some(g => /\d/.test(g.text || "")) ? `<div><div class="lbl" style="margin-bottom:4px">이번 분기 주요 실적</div><div class="kv gd">${e.highlights.filter(g => /\d/.test(g.text || "")).map(g => `<div>${esc(g.label)}</div><div class="v">${gfmt(g)}</div>`).join("")}</div></div>` : ""}
     ${e.url ? `<div class="links"><a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.urlLabel || "실적 보도자료 원문")}</a></div>` : ""}`;
 }
