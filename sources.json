@@ -133,8 +133,11 @@
     "note": "클래스 A·B·C로 나뉘어 표지 주식 수가 XBRL에 합계로 없음 → 최근 분기 희석 가중평균 주식 수 사용"
    },
    "releases": {
-    "2026-06-30": "https://s206.q4cdn.com/479360582/files/doc_news/2026/Jul/22/attachments/2026q2-alphabet-earnings-release.pdf",
-    "2026-03-31": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000043/googexhibit991q12026.htm"
+    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000066/googexhibit991q22026.htm",
+    "2026-03-31": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000043/googexhibit991q12026.htm",
+    "2025-06-30": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000056/googexhibit991q22025.htm",
+    "2025-09-30": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000087/googexhibit991q32025.htm",
+    "2025-12-31": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000012/googexhibit991q42025.htm"
    },
    "irNews": "https://abc.xyz/investor/news/default.aspx",
    "segment": {
@@ -170,9 +173,9 @@
     "note": "사용자 지정 대표 출처(2026-10-28). 분기별 보도자료·10-Q·발표 원고가 모여 있음. 단, 문서 목록은 스크립트로 불러와 자동 읽기가 안 되므로 같은 문서를 SEC EDGAR(8-K Ex99.1, 10-Q — EFTS로 찾기)에서 읽음"
    },
    "summary": {
-    "from": "분기 10-Q 앞부분 재무제표: 손익계산서(3개월, 당해·전년 동기), 재무상태표(분기말·직전 연말), 현금흐름표(누적, 당해·전년). 10-Q 공시 전에는 8-K 보도자료의 같은 표 사용",
-    "added": "2026-10-28",
-    "format": "earnings.summary = 표 3개 배열: ①손익계산서(3개월) cols=[당분기말, 전년 동기말] ②재무상태표 cols=[분기말, 직전 연말], colLabels ['YYYY.MM 말',...], chgLabel '변화' ③현금흐름(연초 누적) cols=[당분기말, 전년 동기말], colLabels ['YYYY 1~N분기' 또는 '상반기'], chgLabel '전년 대비'. 행 라벨·그룹은 PREV 그대로, 현금 유출 행(설비투자·자사주·배당)은 plain:true · 합계 행(총매출·총비용·현금+유가증권 합계 등)은 kids: [구성 항목 라벨]을 지정해 접어서 표시(PREV의 kids 그대로 유지) · '순이익·EPS' 그룹은 순이익·기본 EPS·희석 EPS를 위에 굵게, 기타 손익·세전이익·법인세는 순이익 아래로 접음"
+    "from": "분기 실적 보도자료(8-K Ex99.1)의 손익계산서·재무상태표·현금흐름표(3개월). 사용자 지정 대표 출처 https://abc.xyz/investor/earnings/ (목록이 스크립트로 로드돼 자동 읽기 불가 → 같은 문서를 SEC EDGAR에서 읽음). 10-Q 공시 후 같은 분기 수치 대조",
+    "format": "earnings.summary = 표 3개, 모두 cols=최근 5개 분기말(최신 먼저): ①손익계산서(분기) ②재무상태표(분기말) ③현금흐름(분기 3개월; 잉여현금흐름=영업CF−설비투자). 새 분기는 각 행 맨 앞에 값을 넣고 5개로 자름. 행 라벨·그룹·kids·굵게·plain은 PREV 그대로(총매출·총비용·현금+유가증권·순이익은 접기, 순이익·기본/희석 EPS는 위에 굵게)",
+    "added": "2026-10-28"
    }
   },
   "ORCL": {

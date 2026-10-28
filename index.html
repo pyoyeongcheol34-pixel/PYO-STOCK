@@ -1138,7 +1138,7 @@ function renderEarn() {
     </div>` : ""}
     ${e.summary ? (Array.isArray(e.summary) ? e.summary : [e.summary]).map(sm => summaryTable(sm, cur)).join("") : ""}
     ${Array.isArray(e.highlights) && e.highlights.some(g => /\d/.test(g.text || "")) ? `<div><div class="lbl" style="margin-bottom:4px">이번 분기 주요 실적</div><div class="kv gd">${e.highlights.filter(g => /\d/.test(g.text || "")).map(g => `<div>${esc(g.label)}</div><div class="v">${gfmt(g)}</div>`).join("")}</div></div>` : ""}
-    ${e.url ? `<div class="links"><a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.urlLabel || "실적 보도자료 원문")}</a></div>` : ""}`;
+    ${e.url || (e.links || []).length ? `<div class="links">${e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.urlLabel || "실적 보도자료 원문")}</a>` : ""}${(e.links || []).map(x => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.label)}</a>`).join("")}</div>` : ""}`;
 }
 
 function latestTargets() {
