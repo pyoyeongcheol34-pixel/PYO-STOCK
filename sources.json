@@ -71,15 +71,24 @@
     "added": "2026-10-28"
    },
    "guidance": {
-    "from": "https://www.microsoft.com/en-us/investor/events/fy-YYYY/earnings-fy-YYYY-qN (CFO prepared remarks — 'outlook' 문단). 보도자료에는 가이던스 없음",
-    "last": "https://www.microsoft.com/en-us/investor/events/fy-2027/earnings-fy-2027-q1",
-    "note": "FY27 1Q 실적 발표 웹캐스트 페이지(2026-10-29 확인)에는 아직 CFO 원고/전망 본문이 없음 — IR 다운로드 목록의 Outlook 파일은 자동 읽기 불가. 원고가 올라오면 위 페이지에서 다음 분기 가이던스를 채움"
+    "from": "IR 'Outlook' 파일: https://aka.ms/outlookfyYYqN (다음 분기 번호) → 실제 파일 https://www.microsoft.com/en-us/investor/earnings/FY-YYYY-Qn/Document/DownloadDocument/<id>/OutlookFYyyQn.pptx (슬라이드가 이미지라 그림을 보고 읽음). 보조: CFO 발언 원고 https://aka.ms/transcriptfyYYqN (.docx, 'outlook for our ... quarter' 문단)",
+    "last": "https://aka.ms/outlookfy27q2",
+    "lastFile": "https://www.microsoft.com/en-us/investor/earnings/FY-2027-Q1/Document/DownloadDocument/30/OutlookFY27Q2.pptx",
+    "checkedAt": "2026-10-29"
    },
    "ir": {
     "page": "https://www.microsoft.com/en-us/investor/default",
     "pressRelease": "https://www.microsoft.com/en-us/Investor/earnings/FY-YYYY-Qn/press-release-webcast",
     "metrics": "https://www.microsoft.com/en-us/Investor/earnings/FY-YYYY-Qn/metrics",
-    "note": "사용자 지정 대표 출처(2026-10-29). IR 페이지의 다운로드 파일(재무제표·Outlook 등)은 링크가 스크립트로 로드돼 자동 읽기 불가 → 같은 숫자를 SEC EDGAR(8-K Ex99.1 보도자료, 10-Q R84.htm 제품·서비스별 매출)에서 읽음"
+    "note": "사용자 지정 대표 출처(2026-10-29). 2026-10-29부터 작업 공간에서 www.microsoft.com·aka.ms 접속 허용 → IR 파일(Outlook·원고·슬라이드) 직접 다운로드 가능. 재무제표 숫자는 같은 내용의 SEC 8-K Ex99.1·10-Q에서도 확인",
+    "docLinks": "press-release-webcast 페이지의 다운로드 링크는 shadow DOM 안에 있음 — aka.ms 단축주소: slidesfyYYqN, transcriptfyYYqN, outlookfyYYq(N+1). 리다이렉트된 www.microsoft.com/.../Document/DownloadDocument/<id>/<파일명> 을 curl로 직접 받음 (view.officeapps.live.com 뷰어 주소는 쓰지 않음)",
+    "docs": {
+     "2026-09-30": {
+      "outlook": "https://aka.ms/outlookfy27q2",
+      "transcript": "https://aka.ms/transcriptfy27q1",
+      "slides": "https://aka.ms/slidesfy27q1"
+     }
+    }
    },
    "summary": {
     "from": "분기 실적 보도자료(8-K Ex99.1)의 손익계산서·부문표(Agents and Infra / Devices and Consumer)·재무상태표·현금흐름표(3개월) + 10-Q 'Revenue Classified by Significant Product and Service Offerings'(FilingSummary.xml에서 R 번호 확인, 이번엔 R84.htm). FY26 분기의 부문·제품별 매출은 2026-09-02 8-K 재작성 자료 사용",
@@ -694,5 +703,19 @@
  ],
  "kpiRule": "핵심 지표(stocks[T].kpi)는 새 분기 실적이 반영될 때 tickers[T].kpi.from 문서만 읽어 갱신: kpi.cols 맨 앞에 새 분기 날짜를 넣고 각 row.v 맨 앞에 값 추가(5개 유지), 문서에 없는 값은 null. calc 행은 공시 숫자로 다시 계산. facts·note·links는 새 문서 기준으로 교체. 공시에 없는 지표는 추정하지 않음. 하위 항목 행은 라벨을 '· '로 시작하면 바로 위 행 아래로 접혀서 표시됨.",
  "emptyRule": "채울 숫자가 없는 영역은 화면에 띄우지 않음(빈 칸·'확인 후 채워요' 문구 금지). 영역을 비우기 전에 등록된 공시(XBRL·10-Q/10-K 전문검색 포함)를 한 번 더 확인하고, 그래도 없을 때만 숨김. 숨긴 이유는 sources.json에 기록.",
- "guidanceRule": "earnings.guidance = 회사가 제시한 앞으로의 전망만(다음 분기·연간 수치, 숫자·날짜가 있는 계획). 이번 분기 실제 수치는 earnings.highlights. 둘 다 숫자가 들어간 항목만 넣고 설명 문장(예: '숫자 가이던스 없음', 방향성 코멘트)은 넣지 않음 — 실적 발표 카드에는 확인된 숫자만 보이고, 가이던스는 '다음 분기 전망' 카드에 표시됨. 보도자료의 가이던스 표·Outlook 문단의 모든 항목(매출·영업이익·마진·EPS·FCF·설비투자·세율 등)을 빠짐없이 옮김. 단일 수치(약 X)는 low=high로. 분기 항목 라벨은 'FY'로 시작하지 않고, 연간 항목은 'FYyy '로 시작(다음 회계연도 포함). 보도자료에 가이던스가 없으면 tickers[T].guidance.from 문서(MSFT CFO 발표 원고 등)를 확인."
+ "guidanceRule": "earnings.guidance = 회사가 제시한 앞으로의 전망만(다음 분기·연간 수치, 숫자·날짜가 있는 계획). 이번 분기 실제 수치는 earnings.highlights. 둘 다 숫자가 들어간 항목만 넣고 설명 문장(예: '숫자 가이던스 없음', 방향성 코멘트)은 넣지 않음 — 실적 발표 카드에는 확인된 숫자만 보이고, 가이던스는 '다음 분기 전망' 카드에 표시됨. 보도자료의 가이던스 표·Outlook 문단의 모든 항목(매출·영업이익·마진·EPS·FCF·설비투자·세율 등)을 빠짐없이 옮김. 단일 수치(약 X)는 low=high로. 분기 항목 라벨은 'FY'로 시작하지 않고, 연간 항목은 'FYyy '로 시작(다음 회계연도 포함). 보도자료에 가이던스가 없으면 tickers[T].guidance.from 문서(MSFT CFO 발표 원고 등)를 확인.",
+ "irAccess": {
+  "checkedAt": "2026-10-29T13:20:00Z",
+  "hosts": {
+   "www.microsoft.com": "ok",
+   "aka.ms": "ok",
+   "www.sec.gov": "ok",
+   "abc.xyz": "site 403 (봇 차단)",
+   "ir.aboutamazon.com": "site 403 (봇 차단)",
+   "investor.oracle.com": "site 403 (봇 차단)",
+   "ir.tesla.com": "site 403 (봇 차단, WebFetch로는 읽힘)",
+   "efts.sec.gov": "shell 403 (WebFetch 사용)"
+  },
+  "note": "사이트가 자동 접속을 거부(403)하는 곳은 우회하지 않고 SEC EDGAR 사본 사용"
+ }
 }
