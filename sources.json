@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-28",
+ "updatedAt": "2026-10-29",
  "rules": [
   "실적(매출·매출총이익·영업이익·순이익·EPS)·밸류에이션·수주잔고·부문 실적·가이던스는 SEC 공시(10-Q/10-K/8-K 보도자료)나 회사 IR 공식 자료로만 입력한다.",
   "아래 tickers[T]에 적힌 주소만 직접 조회한다. 일반 웹 검색으로 값을 찾지 않는다.",
@@ -32,18 +32,25 @@
     "kind": "cover"
    },
    "releases": {
-    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/0000789019/000119312526323632/msft-ex99_1.htm"
+    "2026-06-30": "https://www.sec.gov/Archives/edgar/data/0000789019/000119312526323632/msft-ex99_1.htm",
+    "2026-09-30": "https://www.sec.gov/Archives/edgar/data/789019/000119312526436122/msft-ex99_1.htm",
+    "2026-03-31": "https://www.sec.gov/Archives/edgar/data/789019/000119312526191457/msft-ex99_1.htm",
+    "2025-12-31": "https://www.sec.gov/Archives/edgar/data/789019/000119312526027198/msft-ex99_1.htm",
+    "2025-09-30": "https://www.sec.gov/Archives/edgar/data/789019/000119312525256310/msft-ex99_1.htm"
    },
    "filings": {
     "10-K FY26": "https://www.sec.gov/Archives/edgar/data/789019/000119312526323660/",
     "10-Q 2026-03-31": "https://www.sec.gov/Archives/edgar/data/789019/000119312526191507/",
     "10-Q 2025-12-31": "https://www.sec.gov/Archives/edgar/data/789019/000119312526027207/",
-    "10-Q 2025-09-30": "https://www.sec.gov/Archives/edgar/data/789019/000119312525256321/"
+    "10-Q 2025-09-30": "https://www.sec.gov/Archives/edgar/data/789019/000119312525256321/",
+    "10-Q 2026-09-30": "https://www.sec.gov/Archives/edgar/data/789019/000119312526436133/",
+    "8-K FY27 부문 재작성(2026-09-02)": "https://www.sec.gov/Archives/edgar/data/789019/000119312526380280/d291965dex991.htm"
    },
-   "irMetrics": "https://www.microsoft.com/en-us/Investor/earnings/FY-2026-Q4/metrics",
+   "irMetrics": "https://www.microsoft.com/en-us/Investor/earnings/FY-2027-Q1/metrics",
    "segment": {
     "what": "Intelligent Cloud 매출·영업이익, Azure 성장률, Microsoft Cloud 매출",
-    "from": "releases (8-K Ex99.1 부문 표·본문)"
+    "from": "releases (8-K Ex99.1 부문 표·본문)",
+    "note": "FY27(2026-07~)부터 부문이 Agents and Infra / Devices and Consumer로 재편 — Intelligent Cloud 매출·영업이익은 2026-09-30 분기부터 공시 없음(Azure 성장률·Microsoft Cloud 매출만 보도자료에 있음)"
    },
    "backlog": {
     "what": "상업용 RPO(commercial remaining performance obligation)",
@@ -65,7 +72,19 @@
    },
    "guidance": {
     "from": "https://www.microsoft.com/en-us/investor/events/fy-YYYY/earnings-fy-YYYY-qN (CFO prepared remarks — 'outlook' 문단). 보도자료에는 가이던스 없음",
-    "last": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q4"
+    "last": "https://www.microsoft.com/en-us/investor/events/fy-2027/earnings-fy-2027-q1",
+    "note": "FY27 1Q 실적 발표 웹캐스트 페이지(2026-10-29 확인)에는 아직 CFO 원고/전망 본문이 없음 — IR 다운로드 목록의 Outlook 파일은 자동 읽기 불가. 원고가 올라오면 위 페이지에서 다음 분기 가이던스를 채움"
+   },
+   "ir": {
+    "page": "https://www.microsoft.com/en-us/investor/default",
+    "pressRelease": "https://www.microsoft.com/en-us/Investor/earnings/FY-YYYY-Qn/press-release-webcast",
+    "metrics": "https://www.microsoft.com/en-us/Investor/earnings/FY-YYYY-Qn/metrics",
+    "note": "사용자 지정 대표 출처(2026-10-29). IR 페이지의 다운로드 파일(재무제표·Outlook 등)은 링크가 스크립트로 로드돼 자동 읽기 불가 → 같은 숫자를 SEC EDGAR(8-K Ex99.1 보도자료, 10-Q R84.htm 제품·서비스별 매출)에서 읽음"
+   },
+   "summary": {
+    "from": "분기 실적 보도자료(8-K Ex99.1)의 손익계산서·부문표(Agents and Infra / Devices and Consumer)·재무상태표·현금흐름표(3개월) + 10-Q 'Revenue Classified by Significant Product and Service Offerings'(FilingSummary.xml에서 R 번호 확인, 이번엔 R84.htm). FY26 분기의 부문·제품별 매출은 2026-09-02 8-K 재작성 자료 사용",
+    "format": "earnings.summary = 표 3개, cols=최근 5개 회계분기말(최신 먼저), colLabels 'FYyy nQ'(7~9월=1Q, 10~12월=2Q, 1~3월=3Q, 4~6월=4Q): ①손익계산서(총매출=두 부문 매출 접기, 제품·서비스별 매출(합계)=Azure·M365 클라우드·생산성/서버 라이선스·검색광고·Xbox·산업 솔루션·Windows OEM/디바이스·Frontier/지원 서비스 접기, 매출원가(제품·서비스) 접기, 매출총이익 굵게+이익률, 총영업비용(R&D·S&M·G&A) 접기, 영업이익=두 부문 영업이익 접기, 영업이익률, 순이익(영업외·세전·법인세 접기)·기본/희석 EPS 굵게, 회사 조정 희석 EPS(OpenAI 영향 제외)) ②재무상태표(현금+단기투자 접기, 차입금 합계(유동성 장기부채+장기 차입금, 계산) 접기, 단기 이연수익, 유동부채, 부채총계, 자본총계) ③현금흐름(분기 영업CF·설비투자(유형자산 취득)·잉여현금흐름(계산)·자사주 매입·배당금 지급). 각 표의 합계는 원문 합계와 일치하는지 검산. summaryCovers=['q','bs','cf'] 유지 · 새 분기 반영 시 earnings.periodLabel을 'FYyy nQ (YYYY년 M~M월)'로 갱신",
+    "added": "2026-10-29"
    }
   },
   "AMZN": {
@@ -151,7 +170,8 @@
     "2026-03-31": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000043/googexhibit991q12026.htm",
     "2025-06-30": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000056/googexhibit991q22025.htm",
     "2025-09-30": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000087/googexhibit991q32025.htm",
-    "2025-12-31": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000012/googexhibit991q42025.htm"
+    "2025-12-31": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000012/googexhibit991q42025.htm",
+    "2026-09-30": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000080/googexhibit991q32026.htm"
    },
    "irNews": "https://abc.xyz/investor/news/default.aspx",
    "segment": {
@@ -550,7 +570,8 @@
    },
    "releases": {
     "2026-06-30": "https://www.sec.gov/Archives/edgar/data/0001674101/000162828026050323/q22026exhibit991vrt07292026.htm",
-    "2025-12-31": "https://www.sec.gov/Archives/edgar/data/1674101/000167410126000006/exhibit991vrt02112026.htm"
+    "2025-12-31": "https://www.sec.gov/Archives/edgar/data/1674101/000167410126000006/exhibit991vrt02112026.htm",
+    "2026-09-30": "https://www.sec.gov/Archives/edgar/data/1674101/000162828026067707/q32026exhibit991vrt10282026.htm"
    },
    "backlog": {
     "what": "수주잔고(연 1회)",
@@ -634,15 +655,42 @@
    "item": "2026-03-31 분기 희석 EPS 정확값(현재 6개월−2분기 근사 0.42)",
    "url": "코닝 1분기 실적 보도자료(8-K) — 주소 미확인; GLW XBRL EPS 항목은 비어 있음"
   },
-  {
-   "ticker": "AMZN·GOOGL·MSFT·VRT·RKLB·IREN·NVDA",
-   "item": "다음 분기 실적 보도자료",
-   "url": "discovery(EDGAR 전문검색)로 매일 확인",
-   "note": "2026-10-28 확인: 아직 발표 전(VRT 8-K 2건은 인수 공시)."
-  },
   "BE 생산능력(GW)·데이터센터 계약 규모 — 실적 자료에 숫자 없음",
   "RKLB 분기 Electron 발사 횟수 — 실적 자료·10-Q에 집계 없음",
-  "IREN GPU 대수·현장별 가동 MW — FY26 자료에 숫자 없음"
+  "IREN GPU 대수·현장별 가동 MW — FY26 자료에 숫자 없음",
+  {
+   "ticker": "GOOGL",
+   "item": "2026-09-30 분기 실적(손익·부문·재무상태표·현금흐름·핵심 지표·요약표)",
+   "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000080/googexhibit991q32026.htm",
+   "note": "2026-10-28 8-K(2.02) 발견. 2026-10-29 실행에서 SEC가 client_error로 응답해 읽지 못함 → 다음 실행에서 반영. 10-Q XBRL도 아직 없음"
+  },
+  {
+   "ticker": "MSFT",
+   "item": "FY27 2분기 가이던스 (CFO 발표 원고)",
+   "url": "https://www.microsoft.com/en-us/investor/events/fy-2027/earnings-fy-2027-q1",
+   "note": "2026-10-29: 페이지에 원고 본문이 없어 가이던스를 비워 둠"
+  },
+  {
+   "ticker": "MSFT",
+   "item": "Agents and Infra 부문 재작성(과거 분기) 수치",
+   "note": "보도자료·IR 지표에 과거 분기 부문 금액 없음 → 클라우드 카드 최신 분기 매출·영업이익은 비움"
+  },
+  {
+   "ticker": "AMZN·RKLB·IREN·NVDA",
+   "item": "다음 분기 실적 보도자료",
+   "url": "discovery(EDGAR 전문검색)로 매일 확인",
+   "note": "2026-10-29 확인: 아직 발표 전"
+  },
+  {
+   "ticker": "MSFT·VRT",
+   "item": "2026-09-30 분기 10-Q",
+   "note": "8-K 보도자료 수치 사용 중, 10-Q 공시되면 XBRL로 교체"
+  },
+  {
+   "ticker": "ORCL",
+   "item": "2026-08-31 분기 10-Q XBRL의 영업이익·EPS",
+   "note": "XBRL에 매출·순이익만 있어 8-K 행 유지(값 일치)"
+  }
  ],
  "kpiRule": "핵심 지표(stocks[T].kpi)는 새 분기 실적이 반영될 때 tickers[T].kpi.from 문서만 읽어 갱신: kpi.cols 맨 앞에 새 분기 날짜를 넣고 각 row.v 맨 앞에 값 추가(5개 유지), 문서에 없는 값은 null. calc 행은 공시 숫자로 다시 계산. facts·note·links는 새 문서 기준으로 교체. 공시에 없는 지표는 추정하지 않음. 하위 항목 행은 라벨을 '· '로 시작하면 바로 위 행 아래로 접혀서 표시됨.",
  "emptyRule": "채울 숫자가 없는 영역은 화면에 띄우지 않음(빈 칸·'확인 후 채워요' 문구 금지). 영역을 비우기 전에 등록된 공시(XBRL·10-Q/10-K 전문검색 포함)를 한 번 더 확인하고, 그래도 없을 때만 숨김. 숨긴 이유는 sources.json에 기록.",
