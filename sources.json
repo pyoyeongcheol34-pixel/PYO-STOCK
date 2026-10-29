@@ -269,7 +269,7 @@
    },
    "kpi": {
     "what": "인도량·생산량·재고일수, 자동차 매출·규제크레딧·자동차 원가(→ 크레딧 제외 마진 계산), Active FSD Subscriptions·누적 인도량(→ 보급률 계산), 에너지 저장 설치 GWh·에너지 매출/원가, 슈퍼차저 커넥터, 로보택시 문장",
-    "from": "releases (분기 업데이트 Ex99.1의 Operational Summary·Financial Summary 5분기 표)",
+    "from": "IR 페이지의 P&D 보도자료(인도·생산·저장 설치, 실적 전 선반영) + Update 덱 Operational/Financial Summary(FSD 구독·누적 인도 등)",
     "added": "2026-10-28"
    },
    "backlog": {
@@ -277,15 +277,50 @@
     "from": "10-Q 매출 주석 'remaining performance obligations' (EFTS forms=10-Q로 문서 찾기); 전분기 합계는 XBRL us-gaap/RevenueRemainingPerformanceObligation"
    },
    "filings": {
-    "10-Q 2026-09-30": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026066775/tsla-20260930.htm"
+    "10-Q 2026-09-30": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026066775/tsla-20260930.htm",
+    "10-Q 2026-06-30": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026049270/tsla-20260630.htm",
+    "10-Q 2026-03-31": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026026673/tsla-20260331.htm",
+    "10-K 2025-12-31": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026003952/tsla-20251231.htm"
    },
    "guidance": {
-    "from": "분기 업데이트(Ex99.1)의 Outlook 문단 + 생산능력 표. 매출·EPS·인도량 숫자 가이던스는 내지 않음(2026-10-28 재확인)"
+    "from": "Update 덱 Outlook·생산능력 표 (매출·EPS·인도량 숫자 가이던스는 없음)"
    },
    "summary": {
-    "from": "분기 업데이트(Ex99.1) 첫머리의 'FINANCIAL SUMMARY (Unaudited)' 표 — 5개 분기 열 그대로(백만 달러, %, 주당). 설비투자는 양수(유출액)로 저장",
+    "from": "IR 페이지(ir.tesla.com) Update 덱 첫 장 'FINANCIAL SUMMARY' 표 — 같은 덱이 SEC 8-K Ex99.1로도 공시됨",
     "added": "2026-10-28",
     "format": "earnings.summary = 표 1개: cols=최근 5개 분기말(최신 먼저), 행 라벨·그룹은 PREV 그대로, 설비투자 행은 양수·plain:true · 합계 행(총매출·총비용·현금+유가증권 합계 등)은 kids: [구성 항목 라벨]을 지정해 접어서 표시(PREV의 kids 그대로 유지) · earnings.summaryCovers = ['q','bs','cf'] 유지(분기 실적·현금부채·CAPEX 카드 숨김)"
+   },
+   "ir": {
+    "page": "https://ir.tesla.com/#quarterly-disclosure",
+    "note": "사용자 지정 대표 출처(2026-10-29). 자동 읽기 가능 — 분기마다 생산·인도 보도자료(P&D), Update 덱 PDF(assets-ir.tesla.com/tesla-contents/IR/TSLA-QN-YYYY-Update.pdf), 실적 웹캐스트, 10-Q/10-K 링크가 정리돼 있음. 같은 덱은 SEC 8-K Ex99.1로도 공시됨",
+    "docs": {
+     "2026-09-30": {
+      "pd": "https://ir.tesla.com/press-release/tesla-third-quarter-2026-production-deliveries-and-deployments",
+      "deck": "https://assets-ir.tesla.com/tesla-contents/IR/TSLA-Q3-2026-Update.pdf",
+      "10q": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026066775/tsla-20260930.htm"
+     },
+     "2026-06-30": {
+      "pd": "https://ir.tesla.com/press-release/tesla-second-quarter-2026-production-deliveries-and-deployments",
+      "deck": "https://assets-ir.tesla.com/tesla-contents/IR/TSLA-Q2-2026-Update.pdf",
+      "10q": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026049270/tsla-20260630.htm"
+     },
+     "2026-03-31": {
+      "pd": "https://ir.tesla.com/press-release/tesla-first-quarter-2026-production-deliveries-and-deployments",
+      "deck": "https://assets-ir.tesla.com/tesla-contents/IR/TSLA-Q1-2026-Update.pdf",
+      "10q": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026026673/tsla-20260331.htm"
+     },
+     "2025-12-31": {
+      "pd": "https://ir.tesla.com/press-release/tesla-fourth-quarter-2025-production-deliveries-deployments",
+      "deck": "https://assets-ir.tesla.com/tesla-contents/IR/TSLA-Q4-2025-Update.pdf",
+      "10k": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026003952/tsla-20251231.htm"
+     },
+     "2025-09-30": {
+      "pd": "https://ir.tesla.com/press-release/tesla-third-quarter-2025-production-deliveries-deployments",
+      "deck": "https://assets-ir.tesla.com/tesla-contents/IR/TSLA-Q3-2025-Update.pdf",
+      "10q": "https://www.sec.gov/Archives/edgar/data/1318605/000162828025045968/tsla-20250930.htm"
+     }
+    },
+    "use": "매 실행 1회 이 페이지를 읽어 새 분기 문서 확인. ①분기 종료 후 2일 내 나오는 P&D 보도자료 → 핵심 지표(인도량·생산량·에너지 저장 설치)를 실적 발표 전에 먼저 반영 ②Update 덱(또는 SEC Ex99.1) → 재무 요약·핵심 지표·가이던스 ③10-Q/10-K → 분기 실적·RPO 확정"
    }
   },
   "BE": {
