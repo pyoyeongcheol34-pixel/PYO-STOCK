@@ -1122,13 +1122,13 @@ function renderEarn() {
   const rev = G(qr, "Total Revenue"), ry = yoy(rev, G(prev, "Total Revenue"));
   const gm0 = margin(qr, "Gross Profit"), gm = isNum(gm0) ? gm0 : isNum(e.grossMargin) ? e.grossMargin : NaN, om = margin(qr, "Operating Income");
   const gfmt = g => g.text ? esc(g.text) : g.unit === "eps" ? `$${fx(g.low, 2)} – $${fx(g.high, 2)}` : `${fbig(g.low, cur)} – ${fbig(g.high, cur)}`;
-  el.innerHTML = `<h3>최근 실적 발표 · ${qLabel(e.period)} <small>${esc(e.released || "")} 발표 · ${esc(e.srcLabel || "회사 실적 보도자료 기준")}</small></h3>
+  el.innerHTML = `<h3>최근 실적 발표 · ${esc(e.periodLabel || qLabel(e.period))} <small>${esc(e.released || "")} 발표 · ${esc(e.srcLabel || "회사 실적 보도자료 기준")}</small></h3>
     <div class="big2">
       ${tile("매출", fbig(rev, cur), isNum(ry) ? `전년 대비 <span class="${cls(ry)}">${fpct(ry)}</span>` : "")}
       ${tile("GAAP EPS", fnum(G(qr, "Diluted EPS")), isNum(G(prev, "Diluted EPS")) ? `전년 ${fnum(G(prev, "Diluted EPS"))}` : "")}
       ${isNum(e.nonGaapEps) ? tile("Non-GAAP EPS", fnum(e.nonGaapEps), isNum(e.nonGaapEpsPrior) ? `전년 ${fnum(e.nonGaapEpsPrior)}` : "") : ""}
       ${isNum(e.adjEbitda) ? tile("조정 EBITDA", fbig(e.adjEbitda, cur), isNum(e.adjEbitdaPrior) ? `전년 ${fbig(e.adjEbitdaPrior, cur)}` : "") : ""}
-      ${tile("매출총이익률", fpctRaw(gm), "")}
+      ${isNum(gm) ? tile("매출총이익률", fpctRaw(gm), "") : ""}
       ${tile("영업이익률", fpctRaw(om), "", cls(om))}
     </div>
     ${e.consensus && (isNum(e.consensus.rev) || isNum(e.consensus.eps)) ? `<div class="kv">
