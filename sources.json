@@ -206,14 +206,24 @@
     "added": "2026-10-28"
    },
    "filings": {
-    "10-Q 2026-06-30": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000071/goog-20260630.htm"
+    "10-Q 2026-06-30": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000071/goog-20260630.htm",
+    "10-Q 2026-09-30": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000084/goog-20260930.htm"
    },
    "guidance": {
-    "from": "보도자료에 숫자 가이던스 없음. 설비투자 전망은 컨퍼런스 콜에서만 언급(abc.xyz 원고는 스크립트 렌더링이라 읽기 불가)"
+    "from": "보도자료·슬라이드에 숫자 가이던스 없음. 설비투자 전망은 실적 발표 콜에서만 언급 → 콜 페이지(ir.docs[분기].call)의 원고. abc.xyz는 클라우드 작업 공간 접속을 403으로 거부 → 사용자 컴퓨터의 내장 브라우저로 읽음(사용자 요청 시)",
+    "checked": "2026-10-30 3분기 콜 페이지에 원고 아직 없음"
    },
    "ir": {
     "page": "https://abc.xyz/investor/earnings/",
-    "note": "사용자 지정 대표 출처(2026-10-28). 분기별 보도자료·10-Q·발표 원고가 모여 있음. 단, 문서 목록은 스크립트로 불러와 자동 읽기가 안 되므로 같은 문서를 SEC EDGAR(8-K Ex99.1, 10-Q — EFTS로 찾기)에서 읽음"
+    "note": "사용자 지정 대표 출처(2026-10-28). 분기별 보도자료·10-Q·발표 원고가 모여 있음. 단, 문서 목록은 스크립트로 불러와 자동 읽기가 안 되므로 같은 문서를 SEC EDGAR(8-K Ex99.1, 10-Q — EFTS로 찾기)에서 읽음",
+    "docs": {
+     "2026-09-30": {
+      "release": "https://s206.q4cdn.com/479360582/files/doc_financials/2026/q3/2026q3-alphabet-earnings-release.pdf",
+      "slides": "https://s206.q4cdn.com/479360582/files/doc_financials/2026/q3/2026q3-alphabet-earnings-slides.pdf",
+      "10-Q": "https://s206.q4cdn.com/479360582/files/doc_financials/2026/q3/GOOG-10-Q-Q3-2026.pdf",
+      "call": "https://abc.xyz/investor/events/event-details/2026/2026-Q3-Earnings-Call-2026-Ujou16CTw9/default.aspx"
+     }
+    }
    },
    "summary": {
     "from": "분기 실적 보도자료(8-K Ex99.1)의 손익계산서·재무상태표·현금흐름표(3개월). 사용자 지정 대표 출처 https://abc.xyz/investor/earnings/ (목록이 스크립트로 로드돼 자동 읽기 불가 → 같은 문서를 SEC EDGAR에서 읽음). 10-Q 공시 후 같은 분기 수치 대조",
