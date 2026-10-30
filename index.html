@@ -235,6 +235,11 @@ table.t th:first-child,table.t td:first-child{position:sticky;left:0;z-index:1;b
 .big2 .lbl{font-size:11px}
 .big2 .v{font-family:var(--mono);font-size:24px;font-weight:700;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .big2 .note{margin-top:auto;font-size:12px}
+.big2 .tfoot{margin-top:auto;padding-top:7px;border-top:1px dashed var(--line);display:flex;flex-direction:column;gap:3px}
+.big2 .tf{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted);font-family:var(--mono);white-space:nowrap}
+.big2 .tf>span:first-child{font-family:var(--sans)}
+.big2 .tf>span:last-child{color:var(--ink);overflow:hidden;text-overflow:ellipsis}
+.big2 .tf span.up{color:var(--up);font-weight:600} .big2 .tf span.down{color:var(--down);font-weight:600} .big2 .tf span.flat{color:var(--flat)}
 .big2.three{grid-template-columns:repeat(3,minmax(0,1fr))}
 .big2.three>div{padding:12px 12px 13px}
 .big2.three .v{font-size:21px}
@@ -1122,14 +1127,36 @@ function renderEarn() {
   const rev = G(qr, "Total Revenue"), ry = yoy(rev, G(prev, "Total Revenue"));
   const gm0 = margin(qr, "Gross Profit"), gm = isNum(gm0) ? gm0 : isNum(e.grossMargin) ? e.grossMargin : NaN, om = margin(qr, "Operating Income");
   const gfmt = g => g.text ? esc(g.text) : g.unit === "eps" ? `$${fx(g.low, 2)} – $${fx(g.high, 2)}` : `${fbig(g.low, cur)} – ${fbig(g.high, cur)}`;
+  // tile footer: 예측(컨센서스) · 전년 · 전년 대비
+  const cq = (D.outlook && Array.isArray(D.outlook.quarters) ? D.outlook.quarters : []).find(q => q.period === e.period) || {};
+  const cRev = e.consensus && isNum(e.consensus.rev) ? e.consensus.rev : cq.rev && isNum(cq.rev.avg) ? cq.rev.avg : NaN;
+  const cEps = e.consensus && isNum(e.consensus.eps) ? e.consensus.eps : cq.eps && isNum(cq.eps.avg) ? cq.eps.avg : NaN;
+  const ppS = d => isNum(d) ? `${d > 0 ? "+" : d < 0 ? "−" : ""}${fx(Math.abs(d * 100), 1)}%p` : "–";
+  const rel = (a, b) => isNum(a) && isNum(b) && b !== 0 ? a / Math.abs(b) - (b > 0 ? 1 : -1) : NaN;
+  const turn = (a, b) => !isNum(a) || !isNum(b) ? null : b < 0 && a >= 0 ? ["흑자전환", 1] : b >= 0 && a < 0 ? ["적자전환", -1] : b < 0 && a < 0 ? (a > b ? ["적자축소", 1] : ["적자확대", -1]) : null;
+  const yoyTxt = (a, b) => { const t = turn(a, b); return t ? t[0] : fpct(rel(a, b)); };
+  const yoyVal = (a, b) => { const t = turn(a, b); return t ? t[1] : rel(a, b); };
+  const fcLbl = e.consensus && e.consensus.revLabel ? `예측 (${esc(e.consensus.revLabel)})` : "예측";
+  const foot = (fc, fcVs, py, chg, chgTxt, lbl = "예측") => {
+    const L = [];
+    if (fc) L.push(`<div class="tf"><span>${lbl}</span><span>${fc}</span></div>`);
+    if (fc && isNum(fcVs)) L.push(`<div class="tf"><span>예측 대비</span><span class="${cls(fcVs)}">${fpct(fcVs)}</span></div>`);
+    if (py) L.push(`<div class="tf"><span>전년</span><span>${py}</span></div>`);
+    if (isNum(chg)) L.push(`<div class="tf"><span>전년 대비</span><span class="${cls(chg)}">${chgTxt}</span></div>`);
+    return L.length ? `<div class="tfoot">${L.join("")}</div>` : "";
+  };
+  const revCmp = e.consensus && isNum(e.consensus.revActual) ? e.consensus.revActual : rev;
+  const eps0 = G(qr, "Diluted EPS"), epsP = G(prev, "Diluted EPS"), hasNG = isNum(e.nonGaapEps);
+  const gmP = margin(prev, "Gross Profit"), omP = margin(prev, "Operating Income");
+  const tile2 = (l, v, footHtml, c = "") => `<div><div class="lbl">${l}</div><div class="v ${c}">${v}</div>${footHtml}</div>`;
   el.innerHTML = `<h3>최근 실적 발표 · ${esc(e.periodLabel || qLabel(e.period))} <small>${esc(e.released || "")} 발표 · ${esc(e.srcLabel || "회사 실적 보도자료 기준")}</small></h3>
     <div class="big2">
-      ${tile("매출", fbig(rev, cur), isNum(ry) ? `전년 대비 <span class="${cls(ry)}">${fpct(ry)}</span>` : "")}
-      ${tile("GAAP EPS", fnum(G(qr, "Diluted EPS")), isNum(G(prev, "Diluted EPS")) ? `전년 ${fnum(G(prev, "Diluted EPS"))}` : "")}
-      ${isNum(e.nonGaapEps) ? tile("Non-GAAP EPS", fnum(e.nonGaapEps), isNum(e.nonGaapEpsPrior) ? `전년 ${fnum(e.nonGaapEpsPrior)}` : "") : ""}
-      ${isNum(e.adjEbitda) ? tile("조정 EBITDA", fbig(e.adjEbitda, cur), isNum(e.adjEbitdaPrior) ? `전년 ${fbig(e.adjEbitdaPrior, cur)}` : "") : ""}
-      ${isNum(gm) ? tile("매출총이익률", fpctRaw(gm), "") : ""}
-      ${tile("영업이익률", fpctRaw(om), "", cls(om))}
+      ${tile2("매출", fbig(rev, cur), foot(isNum(cRev) ? fbig(cRev, cur) : "", rel(revCmp, cRev), isNum(G(prev, "Total Revenue")) ? fbig(G(prev, "Total Revenue"), cur) : "", ry, fpct(ry), fcLbl))}
+      ${tile2("GAAP EPS", fnum(eps0), foot(!hasNG && isNum(cEps) ? fnum(cEps) : "", !hasNG ? rel(eps0, cEps) : NaN, isNum(epsP) ? fnum(epsP) : "", yoyVal(eps0, epsP), yoyTxt(eps0, epsP)))}
+      ${hasNG ? tile2("Non-GAAP EPS", fnum(e.nonGaapEps), foot(isNum(cEps) ? fnum(cEps) : "", rel(e.nonGaapEps, cEps), isNum(e.nonGaapEpsPrior) ? fnum(e.nonGaapEpsPrior) : "", yoyVal(e.nonGaapEps, e.nonGaapEpsPrior), yoyTxt(e.nonGaapEps, e.nonGaapEpsPrior))) : ""}
+      ${isNum(e.adjEbitda) ? tile2("조정 EBITDA", fbig(e.adjEbitda, cur), foot("", NaN, isNum(e.adjEbitdaPrior) ? fbig(e.adjEbitdaPrior, cur) : "", yoyVal(e.adjEbitda, e.adjEbitdaPrior), yoyTxt(e.adjEbitda, e.adjEbitdaPrior))) : ""}
+      ${isNum(gm) ? tile2("매출총이익률", fpctRaw(gm), foot("", NaN, isNum(gmP) ? fpctRaw(gmP) : "", isNum(gmP) ? gm - gmP : NaN, ppS(gm - gmP))) : ""}
+      ${tile2("영업이익률", fpctRaw(om), foot("", NaN, isNum(omP) ? fpctRaw(omP) : "", isNum(omP) ? om - omP : NaN, ppS(om - omP)), cls(om))}
     </div>
     ${e.consensus && (isNum(e.consensus.rev) || isNum(e.consensus.eps)) ? `<div class="kv">
       ${isNum(e.consensus.rev) ? (() => { const ra = isNum(e.consensus.revActual) ? e.consensus.revActual : rev, lb = e.consensus.revLabel ? esc(e.consensus.revLabel) : "매출";
